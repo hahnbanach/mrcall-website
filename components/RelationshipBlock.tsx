@@ -1,9 +1,12 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import { useTranslations } from 'next-intl';
 import MemoryGraph from './MemoryGraph';
 
 export default function RelationshipBlock() {
+  const t = useTranslations('relationship');
+
   return (
     <section className="py-24 lg:py-32 bg-brand-light-grey">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
@@ -16,15 +19,14 @@ export default function RelationshipBlock() {
           className="text-center mb-16"
         >
           <p className="text-sm font-bold uppercase tracking-widest text-brand-blue mb-4">
-            Relationship Intelligence
+            {t('label')}
           </p>
           <h2 className="text-4xl sm:text-5xl lg:text-[3.5rem] font-bold tracking-tight leading-[1.1] text-brand-black">
-            Software forgets.{' '}
-            <span className="text-brand-blue">MrCall remembers.</span>
+            {t('titleStart')}{' '}
+            <span className="text-brand-blue">{t('titleAccent')}</span>
           </h2>
           <p className="mt-6 text-lg leading-relaxed text-brand-black/60 max-w-2xl mx-auto">
-            Total context for every interaction. One brain connected to all your data.
-            It knows who called, what they said, and what happened next.
+            {t('description')}
           </p>
         </motion.div>
 
@@ -39,14 +41,14 @@ export default function RelationshipBlock() {
             className="lg:col-span-1 space-y-4"
           >
             <ContextCard
-              icon="📞"
-              title="Called twice this week"
-              detail="Tuesday 3 min, Thursday 7 min"
+              icon="\u{1F4DE}"
+              title={t('calledTwice')}
+              detail={t('calledTwiceDetail')}
             />
             <ContextCard
-              icon="⚠️"
-              title="Invoice issue"
-              detail="Disputed invoice #1247"
+              icon="\u26A0\uFE0F"
+              title={t('invoiceIssue')}
+              detail={t('invoiceDetail')}
             />
           </motion.div>
 
@@ -64,14 +66,14 @@ export default function RelationshipBlock() {
             className="lg:col-span-1 space-y-4"
           >
             <ContextCard
-              icon="📧"
-              title="Email received"
-              detail="10 minutes ago"
+              icon="\u{1F4E7}"
+              title={t('emailReceived')}
+              detail={t('emailDetail')}
             />
             <ContextCard
-              icon="📅"
-              title="Meeting scheduled"
-              detail="Next Monday at 10:00"
+              icon="\u{1F4C5}"
+              title={t('meetingScheduled')}
+              detail={t('meetingDetail')}
             />
           </motion.div>
         </div>

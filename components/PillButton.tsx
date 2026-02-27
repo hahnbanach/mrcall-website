@@ -1,6 +1,6 @@
 'use client';
 
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
 
 type Variant = 'primary' | 'secondary' | 'orange';
 type Size = 'large' | 'small';

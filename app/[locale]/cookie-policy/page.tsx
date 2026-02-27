@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import Link from 'next/link';
+import { setRequestLocale } from 'next-intl/server';
 import { CONTACT, SITE } from '@/lib/constants';
 
 export const metadata: Metadata = {
@@ -7,11 +7,18 @@ export const metadata: Metadata = {
   description: `Cookie policy for ${SITE.name}`,
 };
 
-export default function CookiePolicyPage() {
+export default async function CookiePolicyPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+
   return (
     <div className="pt-28 pb-20">
       <div className="mx-auto max-w-3xl px-6 lg:px-8">
-        <Link href="/" className="text-sm text-brand-blue hover:underline mb-8 inline-block">&larr; Back to home</Link>
+        <a href="/" className="text-sm text-brand-blue hover:underline mb-8 inline-block">&larr; Back to home</a>
         <h1 className="text-4xl font-bold text-brand-black mb-2">Cookie Policy</h1>
         <p className="text-brand-black/50 text-sm mb-12">Last updated: January 2024</p>
 
@@ -39,7 +46,7 @@ export default function CookiePolicyPage() {
 
           <section>
             <h2 className="text-2xl font-bold text-brand-black">Third-Party Services</h2>
-            <ul className="list-disc pl-6 space-y-2">
+            <ul className="list-disc ps-6 space-y-2">
               <li><strong>Google Analytics:</strong> Website traffic analysis and reporting</li>
               <li><strong>LinkedIn:</strong> Social sharing and advertising</li>
               <li><strong>YouTube:</strong> Embedded video content</li>
@@ -49,7 +56,7 @@ export default function CookiePolicyPage() {
           <section>
             <h2 className="text-2xl font-bold text-brand-black">Managing Cookies</h2>
             <p>You can control cookies through your browser settings:</p>
-            <ul className="list-disc pl-6 space-y-2">
+            <ul className="list-disc ps-6 space-y-2">
               <li><strong>Chrome:</strong> Settings &gt; Privacy and security &gt; Cookies</li>
               <li><strong>Firefox:</strong> Options &gt; Privacy &amp; Security &gt; Cookies</li>
               <li><strong>Safari:</strong> Preferences &gt; Privacy</li>

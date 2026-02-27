@@ -2,12 +2,30 @@
 
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
+import { useLocale, useTranslations } from 'next-intl';
+import { Link, useRouter, usePathname } from '@/i18n/navigation';
 import PillButton from './PillButton';
 import { URLS, NAV_LINKS } from '@/lib/constants';
+import { routing } from '@/i18n/routing';
+
+const LOCALE_LABELS: Record<string, string> = {
+  en: 'EN',
+  it: 'IT',
+  da: 'DA',
+  fr: 'FR',
+  es: 'ES',
+  pt: 'PT',
+  ar: 'AR',
+};
 
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
+  const [langOpen, setLangOpen] = useState(false);
+  const t = useTranslations('common');
+  const tNav = useTranslations('nav');
+  const locale = useLocale();
+  const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -17,9 +35,14 @@ export default function Header() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const handleLocaleChange = (newLocale: string) => {
+    router.replace(pathname, { locale: newLocale });
+    setLangOpen(false);
+  };
+
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${
         scrolled
           ? 'bg-white/95 backdrop-blur-md shadow-sm'
           : 'bg-transparent'
@@ -53,21 +76,52 @@ export default function Header() {
                 href={link.href}
                 className="text-sm text-brand-black/70 hover:text-brand-black transition-colors"
               >
-                {link.label}
+                {tNav(link.key)}
               </Link>
             ))}
           </div>
 
-          {/* Auth buttons */}
+          {/* Auth buttons + language switcher */}
           <div className="flex items-center gap-4">
+            {/* Language switcher */}
+            <div className="relative">
+              <button
+                onClick={() => setLangOpen(!langOpen)}
+                className="text-xs font-bold text-brand-black/50 hover:text-brand-black transition-colors px-2 py-1 rounded cursor-pointer"
+              >
+                {LOCALE_LABELS[locale] || locale.toUpperCase()} &#9662;
+              </button>
+              {langOpen && (
+                <>
+                  <div
+                    className="fixed inset-0 z-40"
+                    onClick={() => setLangOpen(false)}
+                  />
+                  <div className="absolute end-0 top-full mt-1 bg-white rounded-lg shadow-lg border border-brand-mid-grey/30 py-1 z-50 min-w-[80px]">
+                    {routing.locales.map((loc) => (
+                      <button
+                        key={loc}
+                        onClick={() => handleLocaleChange(loc)}
+                        className={`block w-full text-start px-4 py-1.5 text-xs cursor-pointer hover:bg-brand-light-grey transition-colors ${
+                          loc === locale ? 'font-bold text-brand-blue' : 'text-brand-black/70'
+                        }`}
+                      >
+                        {LOCALE_LABELS[loc]}
+                      </button>
+                    ))}
+                  </div>
+                </>
+              )}
+            </div>
+
             <a
               href={URLS.signin}
               className="text-sm text-brand-black/70 hover:text-brand-black transition-colors hidden sm:inline"
             >
-              Sign in
+              {t('signIn')}
             </a>
             <PillButton href={URLS.signup} size="small" external>
-              Try free
+              {t('tryFree')}
             </PillButton>
           </div>
         </nav>

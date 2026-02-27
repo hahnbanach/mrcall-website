@@ -1,8 +1,16 @@
+'use client';
+
 import Image from 'next/image';
-import Link from 'next/link';
+import { useTranslations } from 'next-intl';
+import { Link } from '@/i18n/navigation';
 import { URLS, CONTACT, SITE } from '@/lib/constants';
 
 export default function Footer() {
+  const t = useTranslations('footer');
+  const tCommon = useTranslations('common');
+  const tNav = useTranslations('nav');
+  const tMeta = useTranslations('metadata');
+
   return (
     <footer className="bg-brand-black text-white">
       <div className="mx-auto max-w-7xl px-6 lg:px-8 py-16 lg:py-20">
@@ -20,34 +28,34 @@ export default function Footer() {
               <span className="text-xl font-bold tracking-tight">MrCall</span>
             </Link>
             <p className="text-white/60 text-sm leading-relaxed max-w-xs">
-              {SITE.description}
+              {tMeta('homeDescription')}
             </p>
           </div>
 
           {/* Product */}
           <div>
             <h3 className="text-sm font-bold uppercase tracking-widest text-white/40 mb-6">
-              Product
+              {t('product')}
             </h3>
             <ul className="space-y-3">
               <li>
                 <a href={URLS.signup} className="text-white/70 hover:text-white transition-colors text-sm">
-                  Get started
+                  {tCommon('getStarted')}
                 </a>
               </li>
               <li>
                 <a href={URLS.signin} className="text-white/70 hover:text-white transition-colors text-sm">
-                  Sign in
+                  {tCommon('signIn')}
                 </a>
               </li>
               <li>
                 <a href="#features" className="text-white/70 hover:text-white transition-colors text-sm">
-                  Features
+                  {t('features')}
                 </a>
               </li>
               <li>
                 <Link href="/usecases" className="text-white/70 hover:text-white transition-colors text-sm">
-                  Use cases
+                  {tNav('useCases')}
                 </Link>
               </li>
             </ul>
@@ -56,18 +64,18 @@ export default function Footer() {
           {/* Company */}
           <div>
             <h3 className="text-sm font-bold uppercase tracking-widest text-white/40 mb-6">
-              Company
+              {t('company')}
             </h3>
             <ul className="space-y-3">
               <li>
                 <Link href="/contacts" className="text-white/70 hover:text-white transition-colors text-sm">
-                  Contact
+                  {t('contact')}
                 </Link>
               </li>
               <li>
-                <Link href="/blog" className="text-white/70 hover:text-white transition-colors text-sm">
-                  Blog
-                </Link>
+                <a href="/blog" className="text-white/70 hover:text-white transition-colors text-sm">
+                  {tNav('blog')}
+                </a>
               </li>
               <li>
                 <a href={URLS.linkedin} target="_blank" rel="noopener noreferrer" className="text-white/70 hover:text-white transition-colors text-sm">
@@ -85,22 +93,22 @@ export default function Footer() {
           {/* Legal */}
           <div>
             <h3 className="text-sm font-bold uppercase tracking-widest text-white/40 mb-6">
-              Legal
+              {t('legal')}
             </h3>
             <ul className="space-y-3">
               <li>
                 <Link href="/privacy" className="text-white/70 hover:text-white transition-colors text-sm">
-                  Privacy Policy
+                  {t('privacyPolicy')}
                 </Link>
               </li>
               <li>
                 <Link href="/terms" className="text-white/70 hover:text-white transition-colors text-sm">
-                  Terms of Service
+                  {t('termsOfService')}
                 </Link>
               </li>
               <li>
                 <Link href="/cookie-policy" className="text-white/70 hover:text-white transition-colors text-sm">
-                  Cookie Policy
+                  {t('cookiePolicy')}
                 </Link>
               </li>
               <li>
@@ -115,7 +123,7 @@ export default function Footer() {
         {/* Bottom bar */}
         <div className="mt-16 pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-white/40 text-xs">
-            &copy; {new Date().getFullYear()} {SITE.name}. All rights reserved.
+            &copy; {new Date().getFullYear()} {SITE.name}. {t('allRightsReserved')}
           </p>
           <p className="text-white/40 text-xs">
             <a href={`tel:${CONTACT.phoneRaw}`} className="hover:text-white/60 transition-colors">

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
+import { useTranslations } from 'next-intl';
 
 interface Node {
   id: string;
@@ -19,16 +20,6 @@ interface Edge {
   to: string;
 }
 
-const NODES: Node[] = [
-  { id: 'contact', label: 'Alessandro', sublabel: 'Key Client', x: 0.5, y: 0.5, radius: 40, color: '#0068FF', type: 'center' },
-  { id: 'call1', label: 'Called Tuesday', sublabel: '3 min call', x: 0.2, y: 0.25, radius: 28, color: '#0F110C', type: 'data' },
-  { id: 'call2', label: 'Called Thursday', sublabel: '7 min call', x: 0.8, y: 0.2, radius: 28, color: '#0F110C', type: 'data' },
-  { id: 'invoice', label: 'Invoice #1247', sublabel: 'Issue reported', x: 0.15, y: 0.7, radius: 28, color: '#F7941F', type: 'data' },
-  { id: 'email', label: 'Email received', sublabel: '10 min ago', x: 0.82, y: 0.65, radius: 28, color: '#3F413D', type: 'data' },
-  { id: 'pref', label: 'Prefers SMS', sublabel: 'Contact pref', x: 0.35, y: 0.82, radius: 24, color: '#D7DCE2', type: 'data' },
-  { id: 'meeting', label: 'Meeting booked', sublabel: 'Next Monday', x: 0.65, y: 0.85, radius: 24, color: '#0068FF', type: 'data' },
-];
-
 const EDGES: Edge[] = [
   { from: 'contact', to: 'call1' },
   { from: 'contact', to: 'call2' },
@@ -41,11 +32,25 @@ const EDGES: Edge[] = [
 ];
 
 export default function MemoryGraph() {
+  const t = useTranslations('memoryGraph');
+
+  const NODES: Node[] = [
+    { id: 'contact', label: t('alessandro'), sublabel: t('keyClient'), x: 0.5, y: 0.5, radius: 40, color: '#0068FF', type: 'center' },
+    { id: 'call1', label: t('calledTuesday'), sublabel: t('threeMinCall'), x: 0.2, y: 0.25, radius: 28, color: '#0F110C', type: 'data' },
+    { id: 'call2', label: t('calledThursday'), sublabel: t('sevenMinCall'), x: 0.8, y: 0.2, radius: 28, color: '#0F110C', type: 'data' },
+    { id: 'invoice', label: t('invoice'), sublabel: t('issueReported'), x: 0.15, y: 0.7, radius: 28, color: '#F7941F', type: 'data' },
+    { id: 'email', label: t('emailReceived'), sublabel: t('tenMinAgo'), x: 0.82, y: 0.65, radius: 28, color: '#3F413D', type: 'data' },
+    { id: 'pref', label: t('prefersSms'), sublabel: t('contactPref'), x: 0.35, y: 0.82, radius: 24, color: '#D7DCE2', type: 'data' },
+    { id: 'meeting', label: t('meetingBooked'), sublabel: t('nextMonday'), x: 0.65, y: 0.85, radius: 24, color: '#0068FF', type: 'data' },
+  ];
+
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animFrameRef = useRef<number>(0);
   const [hoveredNode, setHoveredNode] = useState<string | null>(null);
   const [dimensions, setDimensions] = useState({ width: 600, height: 450 });
   const timeRef = useRef(0);
+  const nodesRef = useRef(NODES);
+  nodesRef.current = NODES;
 
   useEffect(() => {
     const updateDimensions = () => {
@@ -72,6 +77,7 @@ export default function MemoryGraph() {
     ctx.scale(dpr, dpr);
 
     const draw = () => {
+      const nodes = nodesRef.current;
       timeRef.current += 0.01;
       const t = timeRef.current;
       ctx.clearRect(0, 0, dimensions.width, dimensions.height);
@@ -83,8 +89,8 @@ export default function MemoryGraph() {
 
       // Draw edges
       EDGES.forEach((edge) => {
-        const fromNode = NODES.find((n) => n.id === edge.from)!;
-        const toNode = NODES.find((n) => n.id === edge.to)!;
+        const fromNode = nodes.find((n) => n.id === edge.from)!;
+        const toNode = nodes.find((n) => n.id === edge.to)!;
         const from = getNodePos(fromNode);
         const to = getNodePos(toNode);
 
@@ -106,7 +112,7 @@ export default function MemoryGraph() {
       });
 
       // Draw nodes
-      NODES.forEach((node) => {
+      nodes.forEach((node) => {
         const pos = getNodePos(node);
         const isHovered = hoveredNode === node.id;
         const r = node.radius * (isHovered ? 1.15 : 1);
@@ -155,7 +161,8 @@ export default function MemoryGraph() {
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
 
-    const found = NODES.find((node) => {
+    const nodes = nodesRef.current;
+    const found = nodes.find((node) => {
       const nx = node.x * dimensions.width;
       const ny = node.y * dimensions.height;
       return Math.sqrt((x - nx) ** 2 + (y - ny) ** 2) < node.radius + 5;

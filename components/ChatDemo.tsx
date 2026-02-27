@@ -2,19 +2,22 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 
-const userMessage = "I need an agent who handles real estate leads, remembers client preferences, and schedules viewings in my Outlook.";
-
-const agentSteps = [
-  { icon: '🧠', text: 'Analyzing requirements...' },
-  { icon: '🏠', text: 'Loading real estate knowledge base' },
-  { icon: '📋', text: 'Enabling client preference memory' },
-  { icon: '📅', text: 'Connecting Outlook calendar integration' },
-  { icon: '✅', text: 'Agent "Arianna — Real Estate" is ready!' },
-];
-
 export default function ChatDemo() {
+  const t = useTranslations('chatDemo');
+
+  const userMessage = t('userMessage');
+
+  const agentSteps = [
+    { icon: '\u{1F9E0}', text: t('stepAnalyzing') },
+    { icon: '\u{1F3E0}', text: t('stepKnowledgeBase') },
+    { icon: '\u{1F4CB}', text: t('stepMemory') },
+    { icon: '\u{1F4C5}', text: t('stepCalendar') },
+    { icon: '\u2705', text: t('stepReady') },
+  ];
+
   const [step, setStep] = useState(0);
   const [showUser, setShowUser] = useState(false);
   const [typedText, setTypedText] = useState('');
@@ -40,7 +43,7 @@ export default function ChatDemo() {
       const timer = setTimeout(() => setShowSteps(true), 600);
       return () => clearTimeout(timer);
     }
-  }, [showUser, typedText]);
+  }, [showUser, typedText, userMessage]);
 
   // Show agent steps one by one
   useEffect(() => {
@@ -61,7 +64,7 @@ export default function ChatDemo() {
       }, 4000);
       return () => clearTimeout(timer);
     }
-  }, [showSteps, currentStep]);
+  }, [showSteps, currentStep, agentSteps.length]);
 
   useEffect(() => {
     if (containerRef.current) {
@@ -84,8 +87,8 @@ export default function ChatDemo() {
             />
           </div>
           <div>
-            <p className="text-white text-sm font-bold">MrCall Configurator</p>
-            <p className="text-white/50 text-xs">Describe your perfect agent</p>
+            <p className="text-white text-sm font-bold">{t('configurator')}</p>
+            <p className="text-white/50 text-xs">{t('subtitle')}</p>
           </div>
         </div>
 
@@ -94,7 +97,7 @@ export default function ChatDemo() {
           {/* System greeting */}
           <div className="flex justify-start">
             <div className="bg-white rounded-2xl px-4 py-3 text-sm text-brand-black/70 shadow-sm max-w-[85%]">
-              Tell me what you need. I&apos;ll build your agent in seconds.
+              {t('greeting')}
             </div>
           </div>
 
@@ -109,7 +112,7 @@ export default function ChatDemo() {
                 <div className="bg-brand-blue text-white rounded-2xl px-4 py-3 text-sm max-w-[85%] leading-relaxed">
                   {typedText}
                   {typedText.length < userMessage.length && (
-                    <span className="inline-block w-0.5 h-4 bg-white/70 ml-0.5 animate-pulse align-middle" />
+                    <span className="inline-block w-0.5 h-4 bg-white/70 ms-0.5 animate-pulse align-middle" />
                   )}
                 </div>
               </motion.div>
@@ -165,7 +168,7 @@ export default function ChatDemo() {
         <div className="px-5 py-4 border-t border-brand-mid-grey/20 bg-white">
           <div className="flex items-center gap-3">
             <div className="flex-1 bg-brand-light-grey rounded-full h-10 flex items-center px-4">
-              <span className="text-xs text-brand-black/40">Describe your agent...</span>
+              <span className="text-xs text-brand-black/40">{t('placeholder')}</span>
             </div>
             <button className="w-10 h-10 rounded-full bg-brand-blue flex items-center justify-center text-white">
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>

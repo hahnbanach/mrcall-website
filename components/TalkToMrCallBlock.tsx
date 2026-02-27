@@ -2,10 +2,12 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslations } from 'next-intl';
 
 type DemoState = 'idle' | 'consent' | 'active';
 
 export default function TalkToMrCallBlock() {
+  const t = useTranslations('talkToMrCall');
   const [state, setState] = useState<DemoState>('idle');
 
   const handleStartConversation = () => {
@@ -24,15 +26,14 @@ export default function TalkToMrCallBlock() {
             viewport={{ once: true, margin: '-100px' }}
           >
             <p className="text-sm font-bold uppercase tracking-widest text-brand-blue mb-4">
-              Live Demo
+              {t('label')}
             </p>
             <h2 className="text-4xl sm:text-5xl lg:text-[3.5rem] font-bold tracking-tight leading-[1.1] text-brand-black">
-              Hear it for{' '}
-              <span className="text-brand-blue">yourself.</span>
+              {t('titleStart')}{' '}
+              <span className="text-brand-blue">{t('titleAccent')}</span>
             </h2>
             <p className="mt-6 text-lg leading-relaxed text-brand-black/60">
-              Talk to our AI agent right now. No signup required. Experience
-              how MrCall handles a real conversation — naturally and professionally.
+              {t('description')}
             </p>
           </motion.div>
 
@@ -55,7 +56,7 @@ export default function TalkToMrCallBlock() {
                       <path d="M12 15c1.66 0 2.99-1.34 2.99-3L15 5c0-1.66-1.34-3-3-3S9 3.34 9 5v7c0 1.66 1.34 3 3 3z" />
                       <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z" />
                     </svg>
-                    Talk to MrCall
+                    {t('talkButton')}
                   </button>
                 </motion.div>
               )}
@@ -67,7 +68,7 @@ export default function TalkToMrCallBlock() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
                   transition={{ duration: 0.4 }}
-                  className="bg-white rounded-2xl p-8 shadow-lg border border-brand-mid-grey/30 text-left max-w-lg mx-auto"
+                  className="bg-white rounded-2xl p-8 shadow-lg border border-brand-mid-grey/30 text-start max-w-lg mx-auto"
                 >
                   <div className="flex items-center gap-3 mb-4">
                     <div className="w-8 h-8 rounded-full bg-brand-orange/10 flex items-center justify-center">
@@ -75,14 +76,11 @@ export default function TalkToMrCallBlock() {
                         <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
                       </svg>
                     </div>
-                    <h3 className="text-base font-bold text-brand-black">Before you start</h3>
+                    <h3 className="text-base font-bold text-brand-black">{t('beforeYouStart')}</h3>
                   </div>
 
                   <p className="text-sm text-brand-black/60 leading-relaxed mb-6">
-                    By clicking &ldquo;Start conversation&rdquo; you agree that your IP address will
-                    be tracked and associated with a recording of the conversation and extraction
-                    of biometric data for voice recognition purposes. Any unlawful, abusive, or
-                    disrespectful use of this demo will be legally prosecuted. Please use responsibly.
+                    {t('consentText')}
                   </p>
 
                   <div className="flex items-center gap-3">
@@ -94,13 +92,13 @@ export default function TalkToMrCallBlock() {
                         <path d="M12 15c1.66 0 2.99-1.34 2.99-3L15 5c0-1.66-1.34-3-3-3S9 3.34 9 5v7c0 1.66 1.34 3 3 3z" />
                         <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z" />
                       </svg>
-                      Start conversation
+                      {t('startConversation')}
                     </button>
                     <button
                       onClick={() => setState('idle')}
                       className="text-sm text-brand-black/40 hover:text-brand-black/60 transition-colors cursor-pointer"
                     >
-                      Cancel
+                      {t('cancel')}
                     </button>
                   </div>
                 </motion.div>
@@ -127,15 +125,15 @@ export default function TalkToMrCallBlock() {
                         </svg>
                       </motion.div>
                     </div>
-                    <p className="text-brand-black font-bold">Connecting to MrCall...</p>
+                    <p className="text-brand-black font-bold">{t('connecting')}</p>
                     <p className="text-sm text-brand-black/50">
-                      Voice widget placeholder — integration code will be provided.
+                      {t('widgetPlaceholder')}
                     </p>
                     <button
                       onClick={() => setState('idle')}
                       className="mt-2 text-sm text-brand-black/40 hover:text-brand-black/60 transition-colors cursor-pointer"
                     >
-                      End demo
+                      {t('endDemo')}
                     </button>
                   </div>
                 </motion.div>

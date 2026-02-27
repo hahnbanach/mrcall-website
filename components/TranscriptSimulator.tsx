@@ -2,16 +2,20 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { TRANSCRIPT_LINES } from '@/lib/constants';
+import { useTranslations } from 'next-intl';
+import { TRANSCRIPT_SPEAKERS } from '@/lib/constants';
 
 export default function TranscriptSimulator() {
   const [visibleLines, setVisibleLines] = useState(0);
   const [showNotification, setShowNotification] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const t = useTranslations('transcript');
+
+  const lineCount = TRANSCRIPT_SPEAKERS.length;
 
   useEffect(() => {
-    if (visibleLines < TRANSCRIPT_LINES.length) {
+    if (visibleLines < lineCount) {
       setIsTyping(true);
       const typingDelay = setTimeout(() => {
         setIsTyping(false);
@@ -29,7 +33,7 @@ export default function TranscriptSimulator() {
         clearTimeout(resetDelay);
       };
     }
-  }, [visibleLines]);
+  }, [visibleLines, lineCount]);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -46,46 +50,46 @@ export default function TranscriptSimulator() {
           <div className="bg-brand-light-grey px-6 py-4 flex items-center gap-3">
             <div className="w-3 h-3 rounded-full bg-green-400 animate-pulse" />
             <span className="text-xs font-bold text-brand-black tracking-wide uppercase">
-              Live Call — Studio Rossi
+              {t('liveCall')}
             </span>
           </div>
 
           {/* Transcript area */}
           <div ref={scrollRef} className="h-80 overflow-y-auto px-5 py-4 space-y-3 scroll-smooth">
             <AnimatePresence>
-              {TRANSCRIPT_LINES.slice(0, visibleLines).map((line, i) => (
+              {TRANSCRIPT_SPEAKERS.slice(0, visibleLines).map((speaker, i) => (
                 <motion.div
                   key={i}
                   initial={{ opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.4 }}
-                  className={`flex ${line.speaker === 'agent' ? 'justify-start' : 'justify-end'}`}
+                  className={`flex ${speaker === 'agent' ? 'justify-start' : 'justify-end'}`}
                 >
                   <div
                     className={`max-w-[80%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed ${
-                      line.speaker === 'agent'
+                      speaker === 'agent'
                         ? 'bg-brand-light-grey text-brand-black'
                         : 'bg-brand-blue text-white'
                     }`}
                   >
                     <span className="block text-[10px] font-bold uppercase tracking-wider mb-1 opacity-50">
-                      {line.speaker === 'agent' ? 'MrCall Agent' : 'Caller'}
+                      {speaker === 'agent' ? t('agent') : t('caller')}
                     </span>
-                    {line.text}
+                    {t(`line${i + 1}`)}
                   </div>
                 </motion.div>
               ))}
             </AnimatePresence>
 
             {/* Typing indicator */}
-            {isTyping && visibleLines < TRANSCRIPT_LINES.length && (
+            {isTyping && visibleLines < lineCount && (
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className={`flex ${TRANSCRIPT_LINES[visibleLines].speaker === 'agent' ? 'justify-start' : 'justify-end'}`}
+                className={`flex ${TRANSCRIPT_SPEAKERS[visibleLines] === 'agent' ? 'justify-start' : 'justify-end'}`}
               >
                 <div className={`rounded-2xl px-4 py-3 ${
-                  TRANSCRIPT_LINES[visibleLines].speaker === 'agent'
+                  TRANSCRIPT_SPEAKERS[visibleLines] === 'agent'
                     ? 'bg-brand-light-grey'
                     : 'bg-brand-blue'
                 }`}>
@@ -94,7 +98,7 @@ export default function TranscriptSimulator() {
                       <motion.div
                         key={dot}
                         className={`w-2 h-2 rounded-full ${
-                          TRANSCRIPT_LINES[visibleLines].speaker === 'agent'
+                          TRANSCRIPT_SPEAKERS[visibleLines] === 'agent'
                             ? 'bg-brand-grey-80'
                             : 'bg-white/70'
                         }`}
@@ -123,7 +127,7 @@ export default function TranscriptSimulator() {
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
             </svg>
-            <span className="font-bold text-sm">Appointment Booked</span>
+            <span className="font-bold text-sm">{t('appointmentBooked')}</span>
           </motion.div>
         )}
       </AnimatePresence>

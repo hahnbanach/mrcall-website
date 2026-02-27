@@ -1,10 +1,29 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import { useTranslations } from 'next-intl';
 import PillButton from './PillButton';
-import { URLS, FEATURES_LIVE, FEATURES_SOON } from '@/lib/constants';
+import { URLS } from '@/lib/constants';
 
 export default function RoadmapBlock() {
+  const t = useTranslations('roadmap');
+  const tc = useTranslations('common');
+
+  const featuresLive = [
+    { title: t('liveVoiceTitle'), description: t('liveVoiceDesc') },
+    { title: t('liveAppsTitle'), description: t('liveAppsDesc') },
+    { title: t('liveTranscriptionTitle'), description: t('liveTranscriptionDesc') },
+    { title: t('liveCalendarTitle'), description: t('liveCalendarDesc') },
+    { title: t('liveSecurityTitle'), description: t('liveSecurityDesc') },
+  ];
+
+  const featuresSoon = [
+    { title: t('soonEmailTitle'), description: t('soonEmailDesc') },
+    { title: t('soonCrmTitle'), description: t('soonCrmDesc') },
+    { title: t('soonTaskTitle'), description: t('soonTaskDesc') },
+    { title: t('soonMemoryTitle'), description: t('soonMemoryDesc') },
+  ];
+
   return (
     <section id="features" className="py-24 lg:py-32 bg-brand-light-grey">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
@@ -17,11 +36,11 @@ export default function RoadmapBlock() {
           className="text-center mb-16"
         >
           <p className="text-sm font-bold uppercase tracking-widest text-brand-blue mb-4">
-            Feature Roadmap
+            {t('label')}
           </p>
           <h2 className="text-4xl sm:text-5xl lg:text-[3.5rem] font-bold tracking-tight leading-[1.1] text-brand-black">
-            Built for today.{' '}
-            <span className="text-brand-blue">Ready for tomorrow.</span>
+            {t('titleStart')}{' '}
+            <span className="text-brand-blue">{t('titleAccent')}</span>
           </h2>
         </motion.div>
 
@@ -35,10 +54,10 @@ export default function RoadmapBlock() {
           >
             <div className="flex items-center gap-3 mb-8">
               <div className="w-3 h-3 rounded-full bg-green-500" />
-              <h3 className="text-xl font-bold text-brand-black">Live Now</h3>
+              <h3 className="text-xl font-bold text-brand-black">{t('liveNow')}</h3>
             </div>
             <div className="space-y-4">
-              {FEATURES_LIVE.map((feature, i) => (
+              {featuresLive.map((feature, i) => (
                 <motion.div
                   key={i}
                   initial={{ opacity: 0, x: -20 }}
@@ -72,10 +91,10 @@ export default function RoadmapBlock() {
           >
             <div className="flex items-center gap-3 mb-8">
               <div className="w-3 h-3 rounded-full bg-brand-blue animate-pulse" />
-              <h3 className="text-xl font-bold text-brand-black">Coming Soon</h3>
+              <h3 className="text-xl font-bold text-brand-black">{t('comingSoon')}</h3>
             </div>
             <div className="space-y-4">
-              {FEATURES_SOON.map((feature, i) => (
+              {featuresSoon.map((feature, i) => (
                 <motion.div
                   key={i}
                   initial={{ opacity: 0, x: -20 }}
@@ -110,7 +129,7 @@ export default function RoadmapBlock() {
           className="text-center mt-16"
         >
           <PillButton href={URLS.signup} external>
-            Try free
+            {tc('tryFree')}
           </PillButton>
         </motion.div>
       </div>

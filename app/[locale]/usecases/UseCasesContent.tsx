@@ -1,17 +1,21 @@
 'use client';
 
-import Link from 'next/link';
 import { motion } from 'framer-motion';
+import { useTranslations } from 'next-intl';
+import { Link } from '@/i18n/navigation';
 import PillButton from '@/components/PillButton';
 import { URLS, USE_CASE_DETAILS } from '@/lib/constants';
 
 export default function UseCasesContent() {
+  const t = useTranslations('useCases');
+  const tc = useTranslations('common');
+
   return (
     <div className="pt-28 pb-0">
       {/* Page Hero */}
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <Link href="/" className="text-sm text-brand-blue hover:underline mb-8 inline-block">
-          &larr; Back to home
+          &larr; {tc('backToHome')}
         </Link>
 
         <motion.div
@@ -21,15 +25,14 @@ export default function UseCasesContent() {
           className="text-center mb-20"
         >
           <p className="text-sm font-bold uppercase tracking-widest text-brand-blue mb-4">
-            Use Cases
+            {t('label')}
           </p>
           <h1 className="text-4xl sm:text-5xl lg:text-[3.5rem] font-bold tracking-tight leading-[1.1] text-brand-black">
-            MrCall works for{' '}
-            <span className="text-brand-blue">every business.</span>
+            {t('titleStart')}{' '}
+            <span className="text-brand-blue">{t('titleAccent')}</span>
           </h1>
           <p className="mt-6 text-lg text-brand-black/60 max-w-2xl mx-auto">
-            From solo freelancers to multi-location enterprises, MrCall adapts
-            to your industry, your workflow, and your customers.
+            {t('description')}
           </p>
         </motion.div>
       </div>
@@ -51,17 +54,21 @@ export default function UseCasesContent() {
             >
               <span className="text-4xl mb-4 block">{useCase.icon}</span>
               <h2 className="text-3xl sm:text-4xl font-bold text-brand-black mb-2">
-                {useCase.name}
+                {t(`${useCase.id}.name`)}
               </h2>
-              <p className="text-xl text-brand-blue font-bold mb-4">{useCase.tagline}</p>
-              <p className="text-brand-black/60 max-w-2xl leading-relaxed">{useCase.problem}</p>
+              <p className="text-xl text-brand-blue font-bold mb-4">
+                {t(`${useCase.id}.tagline`)}
+              </p>
+              <p className="text-brand-black/60 max-w-2xl leading-relaxed">
+                {t(`${useCase.id}.problem`)}
+              </p>
             </motion.div>
 
             {/* Feature Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {useCase.features.map((feature, i) => (
+              {Array.from({ length: useCase.featureCount }, (_, i) => (
                 <motion.div
-                  key={feature.title}
+                  key={i}
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.4, delay: i * 0.08 }}
@@ -75,8 +82,12 @@ export default function UseCasesContent() {
                       </svg>
                     </div>
                     <div>
-                      <h4 className="text-base font-bold text-brand-black">{feature.title}</h4>
-                      <p className="text-sm text-brand-black/50 mt-1 leading-relaxed">{feature.description}</p>
+                      <h4 className="text-base font-bold text-brand-black">
+                        {t(`${useCase.id}.feature${i + 1}Title`)}
+                      </h4>
+                      <p className="text-sm text-brand-black/50 mt-1 leading-relaxed">
+                        {t(`${useCase.id}.feature${i + 1}Desc`)}
+                      </p>
                     </div>
                   </div>
                 </motion.div>
@@ -96,13 +107,13 @@ export default function UseCasesContent() {
             viewport={{ once: true }}
           >
             <h2 className="text-3xl sm:text-4xl font-bold text-brand-black mb-4">
-              Ready to try <span className="text-brand-blue">MrCall</span>?
+              {t('readyToTry')}
             </h2>
             <p className="text-brand-black/60 mb-8 max-w-lg mx-auto">
-              Set up your AI phone agent in minutes. No hardware, no technical skills required.
+              {t('readyDesc')}
             </p>
             <PillButton href={URLS.signup} external>
-              Try free
+              {tc('tryFree')}
             </PillButton>
           </motion.div>
         </div>

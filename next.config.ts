@@ -1,4 +1,5 @@
 import createMDX from '@next/mdx';
+import createNextIntlPlugin from 'next-intl/plugin';
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
@@ -10,10 +11,24 @@ const nextConfig: NextConfig = {
         destination: '/contacts',
         permanent: true,
       },
+      // Blog is English-only — redirect locale-prefixed blog URLs
+      ...['it', 'da', 'fr', 'es', 'pt', 'ar'].flatMap((locale) => [
+        {
+          source: `/${locale}/blog`,
+          destination: '/blog',
+          permanent: true,
+        },
+        {
+          source: `/${locale}/blog/:slug`,
+          destination: '/blog/:slug',
+          permanent: true,
+        },
+      ]),
     ];
   },
 };
 
+const withNextIntl = createNextIntlPlugin('./i18n/request.ts');
 const withMDX = createMDX({});
 
-export default withMDX(nextConfig);
+export default withNextIntl(withMDX(nextConfig));
