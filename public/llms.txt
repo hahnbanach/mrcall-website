@@ -1,0 +1,44 @@
+# MrCall.ai
+
+> MrCall is an AI-powered agentic infrastructure that answers phone calls, triages email, and manages CRM operations for businesses. It serves as a complete virtual office agent.
+
+## About
+
+MrCall provides AI phone agents for small and medium businesses. The system answers incoming calls with natural, high-fidelity voice conversations, extracts key information, books appointments, sends follow-up messages via WhatsApp/SMS, and integrates with CRM and calendar systems.
+
+Founded and headquartered in Milan, Italy. Available globally with multilingual support.
+
+## Key Capabilities
+
+- AI voice reception with natural conversation
+- Automated transcription and information extraction
+- Calendar integration (Google Calendar, Outlook)
+- WhatsApp and SMS notifications
+- CRM synchronization (bidirectional, coming soon)
+- Native iOS and Android mobile apps
+- Multi-tenant enterprise support
+- Knowledge base creation for custom FAQ handling
+- Multilingual support
+
+## Use Cases
+
+MrCall serves: freelancers, medical practices, real estate agencies, restaurants, car dealerships, and property managers. Any business that receives phone calls and needs professional, 24/7 call handling.
+
+## Pricing
+
+Three plans starting at EUR 25/month (Essential), EUR 50/month (Starter), EUR 150/month (Professional). Free trial available. All prices exclude VAT.
+
+## Links
+
+- Website: https://mrcall.ai
+- Dashboard / Sign up: https://dashboard.mrcall.ai/signup
+- Privacy Policy: https://mrcall.ai/privacy
+- Terms of Service: https://mrcall.ai/terms
+- Contact: support@mrcall.ai | +39 02 30573 544
+- LinkedIn: https://linkedin.com/company/mrcall-ai/
+- iOS App: https://apps.apple.com/us/app/mrcall/id1638301178
+- Android App: https://play.google.com/store/apps/details?id=ai.mrcall.app
+
+## API
+
+MrCall offers webhook integrations and CRM sync capabilities. Contact support@mrcall.ai for API access and documentation.
