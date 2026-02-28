@@ -78,7 +78,7 @@
     "meetingDetail": "Lundi prochain à 10h00"
   },
   "memoryGraph": {
-    "alessandro": "Alessandro",
+    "alessandro": "Pierre",
     "keyClient": "Client clé",
     "calledTuesday": "A appelé mardi",
     "threeMinCall": "Appel de 3 min",
@@ -190,13 +190,13 @@
     ]
   },
   "transcript": {
-    "liveCall": "Appel en direct — Studio Rossi",
+    "liveCall": "Appel en direct — Cabinet Dupont",
     "agent": "Agent MrCall",
     "caller": "Appelant",
     "appointmentBooked": "Rendez-vous confirmé",
-    "line1": "Bonjour, merci d'appeler le Studio Rossi. Comment puis-je vous aider ?",
-    "line2": "Bonjour, je souhaiterais prendre rendez-vous avec le Dr. Rossi pour la semaine prochaine.",
-    "line3": "Bien sûr. Je vois que le Dr. Rossi est disponible mardi à 10h00 ou jeudi à 14h30. Quelle date vous conviendrait le mieux ?",
+    "line1": "Bonjour, merci d'appeler le Cabinet Dupont. Comment puis-je vous aider ?",
+    "line2": "Bonjour, je souhaiterais prendre rendez-vous avec le Dr. Dupont pour la semaine prochaine.",
+    "line3": "Bien sûr. Je vois que le Dr. Dupont est disponible mardi à 10h00 ou jeudi à 14h30. Quelle date vous conviendrait le mieux ?",
     "line4": "Jeudi à 14h30, ce serait parfait.",
     "line5": "Excellent. J'ai réservé jeudi à 14h30 pour vous. Vous recevrez un SMS de confirmation sous peu. Puis-je vous aider pour autre chose ?",
     "line6": "Non, c'est tout. Merci !",

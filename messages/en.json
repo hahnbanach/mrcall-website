@@ -78,7 +78,7 @@
     "meetingDetail": "Next Monday at 10:00"
   },
   "memoryGraph": {
-    "alessandro": "Alessandro",
+    "alessandro": "James",
     "keyClient": "Key Client",
     "calledTuesday": "Called Tuesday",
     "threeMinCall": "3 min call",
@@ -190,13 +190,13 @@
     ]
   },
   "transcript": {
-    "liveCall": "Live Call — Studio Rossi",
+    "liveCall": "Live Call — Smith Medical Centre",
     "agent": "MrCall Agent",
     "caller": "Caller",
     "appointmentBooked": "Appointment Booked",
-    "line1": "Good morning, thank you for calling Studio Rossi. How can I help you?",
-    "line2": "Hi, I'd like to schedule an appointment with Dr. Rossi for next week.",
-    "line3": "Of course. I can see Dr. Rossi has availability on Tuesday at 10:00 AM or Thursday at 2:30 PM. Which works better for you?",
+    "line1": "Good morning, thank you for calling Smith Medical Centre. How can I help you?",
+    "line2": "Hi, I'd like to schedule an appointment with Dr. Smith for next week.",
+    "line3": "Of course. I can see Dr. Smith has availability on Tuesday at 10:00 AM or Thursday at 2:30 PM. Which works better for you?",
     "line4": "Thursday at 2:30 would be perfect.",
     "line5": "Excellent. I've booked Thursday at 2:30 PM for you. You'll receive a confirmation SMS shortly. Is there anything else I can help with?",
     "line6": "No, that's all. Thank you!",

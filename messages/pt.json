@@ -78,7 +78,7 @@
     "meetingDetail": "Proxima segunda-feira as 10:00"
   },
   "memoryGraph": {
-    "alessandro": "Alessandro",
+    "alessandro": "Miguel",
     "keyClient": "Cliente-chave",
     "calledTuesday": "Ligou terca-feira",
     "threeMinCall": "Chamada de 3 min",
@@ -190,13 +190,13 @@
     ]
   },
   "transcript": {
-    "liveCall": "Chamada ao Vivo -- Studio Rossi",
+    "liveCall": "Chamada ao Vivo — Clínica Silva",
     "agent": "Agente MrCall",
     "caller": "Chamador",
     "appointmentBooked": "Consulta Marcada",
-    "line1": "Bom dia, obrigado por ligar para o Studio Rossi. Em que posso ajudar?",
-    "line2": "Ola, gostaria de marcar uma consulta com o Dr. Rossi para a proxima semana.",
-    "line3": "Com certeza. Vejo que o Dr. Rossi tem disponibilidade na terca-feira as 10:00 ou na quinta-feira as 14:30. Qual lhe convem mais?",
+    "line1": "Bom dia, obrigado por ligar para a Clínica Silva. Em que posso ajudar?",
+    "line2": "Olá, gostaria de marcar uma consulta com o Dr. Silva para a próxima semana.",
+    "line3": "Com certeza. Vejo que o Dr. Silva tem disponibilidade na terça-feira às 10:00 ou na quinta-feira às 14:30. Qual lhe convém mais?",
     "line4": "Quinta-feira as 14:30 seria perfeito.",
     "line5": "Excelente. Marquei quinta-feira as 14:30 para si. Recebera um SMS de confirmacao em breve. Posso ajudar em mais alguma coisa?",
     "line6": "Nao, e tudo. Obrigado!",

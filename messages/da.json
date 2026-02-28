@@ -78,7 +78,7 @@
     "meetingDetail": "Næste mandag kl. 10:00"
   },
   "memoryGraph": {
-    "alessandro": "Alessandro",
+    "alessandro": "Lars",
     "keyClient": "Nøglekunde",
     "calledTuesday": "Ringede tirsdag",
     "threeMinCall": "3 min opkald",
@@ -190,13 +190,13 @@
     ]
   },
   "transcript": {
-    "liveCall": "Live opkald — Studio Rossi",
+    "liveCall": "Live opkald — Klinik Nielsen",
     "agent": "MrCall Agent",
     "caller": "Opkalder",
     "appointmentBooked": "Aftale booket",
-    "line1": "Godmorgen, tak fordi du ringer til Studio Rossi. Hvordan kan jeg hjælpe dig?",
-    "line2": "Hej, jeg vil gerne bestille en tid hos Dr. Rossi i næste uge.",
-    "line3": "Selvfølgelig. Jeg kan se, at Dr. Rossi har ledig tid tirsdag kl. 10:00 eller torsdag kl. 14:30. Hvad passer bedst for dig?",
+    "line1": "Godmorgen, tak fordi du ringer til Klinik Nielsen. Hvordan kan jeg hjælpe dig?",
+    "line2": "Hej, jeg vil gerne bestille en tid hos Dr. Nielsen i næste uge.",
+    "line3": "Selvfølgelig. Jeg kan se, at Dr. Nielsen har ledig tid tirsdag kl. 10:00 eller torsdag kl. 14:30. Hvad passer bedst for dig?",
     "line4": "Torsdag kl. 14:30 ville være perfekt.",
     "line5": "Fremragende. Jeg har booket torsdag kl. 14:30 til dig. Du modtager en bekræftelses-SMS inden længe. Er der andet, jeg kan hjælpe med?",
     "line6": "Nej, det var det hele. Tak!",

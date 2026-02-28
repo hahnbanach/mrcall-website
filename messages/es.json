@@ -78,7 +78,7 @@
     "meetingDetail": "Próximo lunes a las 10:00"
   },
   "memoryGraph": {
-    "alessandro": "Alessandro",
+    "alessandro": "Carlos",
     "keyClient": "Cliente clave",
     "calledTuesday": "Llamó el martes",
     "threeMinCall": "Llamada de 3 min",
@@ -190,13 +190,13 @@
     ]
   },
   "transcript": {
-    "liveCall": "Llamada en vivo — Studio Rossi",
+    "liveCall": "Llamada en vivo — Clínica García",
     "agent": "Agente MrCall",
     "caller": "Llamante",
     "appointmentBooked": "Cita reservada",
-    "line1": "Buenos días, gracias por llamar a Studio Rossi. ¿En qué puedo ayudarle?",
-    "line2": "Hola, me gustaría pedir una cita con el Dr. Rossi para la semana que viene.",
-    "line3": "Por supuesto. Veo que el Dr. Rossi tiene disponibilidad el martes a las 10:00 o el jueves a las 14:30. ¿Cuál le viene mejor?",
+    "line1": "Buenos días, gracias por llamar a la Clínica García. ¿En qué puedo ayudarle?",
+    "line2": "Hola, me gustaría pedir una cita con el Dr. García para la semana que viene.",
+    "line3": "Por supuesto. Veo que el Dr. García tiene disponibilidad el martes a las 10:00 o el jueves a las 14:30. ¿Cuál le viene mejor?",
     "line4": "El jueves a las 14:30 me vendría perfecto.",
     "line5": "Excelente. Le he reservado el jueves a las 14:30. Recibirá un SMS de confirmación en breve. ¿Puedo ayudarle en algo más?",
     "line6": "No, eso es todo. ¡Muchas gracias!",
