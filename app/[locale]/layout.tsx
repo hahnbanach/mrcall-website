@@ -60,8 +60,8 @@ export async function generateMetadata({
       description: t('homeDescription'),
     },
     icons: {
-      icon: '/logos/mrcall-icon.png',
-      apple: '/logos/mrcall-icon.png',
+      icon: '/favicon.svg',
+      apple: '/favicon.svg',
     },
   };
 }

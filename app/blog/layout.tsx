@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import { Montserrat, Noto_Serif_Display } from 'next/font/google';
 import { NextIntlClientProvider } from 'next-intl';
 import Header from '@/components/Header';
@@ -19,6 +20,13 @@ const notoSerif = Noto_Serif_Display({
   style: ['italic'],
   display: 'swap',
 });
+
+export const metadata: Metadata = {
+  icons: {
+    icon: '/favicon.svg',
+    apple: '/favicon.svg',
+  },
+};
 
 export default function BlogLayout({
   children,
