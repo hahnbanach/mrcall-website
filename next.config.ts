@@ -12,7 +12,7 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       // Blog is English-only — redirect locale-prefixed blog URLs
-      ...['it', 'da', 'fr', 'es', 'pt', 'ar'].flatMap((locale) => [
+      ...['it', 'de', 'da', 'fr', 'es', 'pt', 'ar'].flatMap((locale) => [
         {
           source: `/${locale}/blog`,
           destination: '/blog',

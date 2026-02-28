@@ -64,7 +64,7 @@ export default function PricingBlock() {
                 {/* Price — using Noto Serif accent font */}
                 <div className="mt-4 mb-1">
                   <span className="font-[family-name:var(--font-noto-serif)] italic text-5xl font-bold text-brand-black">
-                    &euro;{plan.price}
+                    {t('currency')}{t(`${plan.key}Price` as 'essentialPrice' | 'starterPrice' | 'professionalPrice')}
                   </span>
                   <span className="font-[family-name:var(--font-noto-serif)] italic text-lg font-bold text-brand-black/60 ms-1">
                     {t('perMonth')}
