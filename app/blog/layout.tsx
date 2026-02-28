@@ -3,6 +3,7 @@ import { Montserrat, Noto_Serif_Display } from 'next/font/google';
 import { NextIntlClientProvider } from 'next-intl';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import { GoogleTagManagerHead, GoogleTagManagerNoScript } from '@/components/GoogleTagManager';
 import messages from '@/messages/en.json';
 import '../globals.css';
 
@@ -38,6 +39,8 @@ export default function BlogLayout({
       <body
         className={`${montserrat.variable} ${notoSerif.variable} font-sans antialiased`}
       >
+        <GoogleTagManagerNoScript />
+        <GoogleTagManagerHead />
         <NextIntlClientProvider locale="en" messages={messages}>
           <Header />
           <main>{children}</main>

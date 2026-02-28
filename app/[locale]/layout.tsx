@@ -4,6 +4,7 @@ import { NextIntlClientProvider } from 'next-intl';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import { GoogleTagManagerHead, GoogleTagManagerNoScript } from '@/components/GoogleTagManager';
 import { SITE } from '@/lib/constants';
 import { routing } from '@/i18n/routing';
 import '../globals.css';
@@ -87,6 +88,8 @@ export default async function RootLayout({
       <body
         className={`${montserrat.variable} ${notoSerif.variable} ${isRtl ? notoSansArabic.variable : ''} font-sans antialiased`}
       >
+        <GoogleTagManagerNoScript />
+        <GoogleTagManagerHead />
         <NextIntlClientProvider>
           <Header />
           <main>{children}</main>
