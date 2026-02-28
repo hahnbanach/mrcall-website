@@ -26,9 +26,9 @@ export const SITE = {
 // Pricing plans — only non-translatable data
 // Plan names and feature labels are in messages/{locale}.json under "pricing" namespace
 export const PRICING_PLANS = [
-  { key: 'essential', price: 25, minutes: '100', calls: '~50', featured: false, featureCount: 6 },
-  { key: 'starter', price: 50, minutes: '220', calls: '~110', featured: true, featureCount: 9 },
-  { key: 'professional', price: 150, minutes: '700', calls: '~350', featured: false, featureCount: 7 },
+  { key: 'essential', price: 25, minutes: '100', calls: '~50 calls', featured: false, featureCount: 6 },
+  { key: 'starter', price: 50, minutes: '220', calls: '~110 calls', featured: true, featureCount: 9 },
+  { key: 'professional', price: 150, minutes: '700', calls: '~350 calls', featured: false, featureCount: 7 },
 ] as const;
 
 // Use case badge keys — labels are in messages/{locale}.json under "useCaseBadges"
