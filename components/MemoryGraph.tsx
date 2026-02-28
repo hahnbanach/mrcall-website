@@ -35,19 +35,19 @@ export default function MemoryGraph() {
   const t = useTranslations('memoryGraph');
 
   const NODES: Node[] = [
-    { id: 'contact', label: t('alessandro'), sublabel: t('keyClient'), x: 0.5, y: 0.5, radius: 55, color: '#0068FF', type: 'center' },
-    { id: 'call1', label: t('calledTuesday'), sublabel: t('threeMinCall'), x: 0.18, y: 0.22, radius: 38, color: '#0F110C', type: 'data' },
-    { id: 'call2', label: t('calledThursday'), sublabel: t('sevenMinCall'), x: 0.82, y: 0.18, radius: 38, color: '#0F110C', type: 'data' },
-    { id: 'invoice', label: t('invoice'), sublabel: t('issueReported'), x: 0.13, y: 0.72, radius: 38, color: '#F7941F', type: 'data' },
-    { id: 'email', label: t('emailReceived'), sublabel: t('tenMinAgo'), x: 0.85, y: 0.65, radius: 38, color: '#3F413D', type: 'data' },
-    { id: 'pref', label: t('prefersSms'), sublabel: t('contactPref'), x: 0.33, y: 0.85, radius: 32, color: '#D7DCE2', type: 'data' },
-    { id: 'meeting', label: t('meetingBooked'), sublabel: t('nextMonday'), x: 0.67, y: 0.88, radius: 32, color: '#0068FF', type: 'data' },
+    { id: 'contact', label: t('alessandro'), sublabel: t('keyClient'), x: 0.5, y: 0.48, radius: 72, color: '#0068FF', type: 'center' },
+    { id: 'call1', label: t('calledTuesday'), sublabel: t('threeMinCall'), x: 0.15, y: 0.18, radius: 50, color: '#0F110C', type: 'data' },
+    { id: 'call2', label: t('calledThursday'), sublabel: t('sevenMinCall'), x: 0.85, y: 0.15, radius: 50, color: '#0F110C', type: 'data' },
+    { id: 'invoice', label: t('invoice'), sublabel: t('issueReported'), x: 0.1, y: 0.75, radius: 50, color: '#F7941F', type: 'data' },
+    { id: 'email', label: t('emailReceived'), sublabel: t('tenMinAgo'), x: 0.88, y: 0.68, radius: 50, color: '#3F413D', type: 'data' },
+    { id: 'pref', label: t('prefersSms'), sublabel: t('contactPref'), x: 0.3, y: 0.88, radius: 42, color: '#D7DCE2', type: 'data' },
+    { id: 'meeting', label: t('meetingBooked'), sublabel: t('nextMonday'), x: 0.7, y: 0.9, radius: 42, color: '#0068FF', type: 'data' },
   ];
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animFrameRef = useRef<number>(0);
   const [hoveredNode, setHoveredNode] = useState<string | null>(null);
-  const [dimensions, setDimensions] = useState({ width: 700, height: 540 });
+  const [dimensions, setDimensions] = useState({ width: 800, height: 620 });
   const timeRef = useRef(0);
   const nodesRef = useRef(NODES);
   nodesRef.current = NODES;
@@ -56,8 +56,8 @@ export default function MemoryGraph() {
     const updateDimensions = () => {
       const container = canvasRef.current?.parentElement;
       if (container) {
-        const w = Math.min(container.clientWidth, 700);
-        setDimensions({ width: w, height: w * 0.77 });
+        const w = Math.min(container.clientWidth, 800);
+        setDimensions({ width: w, height: w * 0.775 });
       }
     };
     updateDimensions();
@@ -106,7 +106,7 @@ export default function MemoryGraph() {
         const px = from.x + (to.x - from.x) * pulse;
         const py = from.y + (to.y - from.y) * pulse;
         ctx.beginPath();
-        ctx.arc(px, py, 2.5, 0, Math.PI * 2);
+        ctx.arc(px, py, 3, 0, Math.PI * 2);
         ctx.fillStyle = 'rgba(0, 104, 255, 0.3)';
         ctx.fill();
       });
@@ -120,7 +120,7 @@ export default function MemoryGraph() {
         // Glow for center
         if (node.type === 'center') {
           ctx.beginPath();
-          ctx.arc(pos.x, pos.y, r + 16, 0, Math.PI * 2);
+          ctx.arc(pos.x, pos.y, r + 20, 0, Math.PI * 2);
           ctx.fillStyle = 'rgba(0, 104, 255, 0.08)';
           ctx.fill();
         }
@@ -131,20 +131,20 @@ export default function MemoryGraph() {
         ctx.fillStyle = node.type === 'center' ? node.color : '#FFFFFF';
         ctx.fill();
         ctx.strokeStyle = node.color;
-        ctx.lineWidth = node.type === 'center' ? 0 : 2;
+        ctx.lineWidth = node.type === 'center' ? 0 : 2.5;
         if (node.type !== 'center') ctx.stroke();
 
         // Label
         ctx.fillStyle = node.type === 'center' ? '#FFFFFF' : '#0F110C';
-        ctx.font = `bold ${node.type === 'center' ? 15 : 11}px Montserrat, system-ui, sans-serif`;
+        ctx.font = `bold ${node.type === 'center' ? 17 : 12}px Montserrat, system-ui, sans-serif`;
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.fillText(node.label, pos.x, pos.y - (node.sublabel ? 8 : 0));
+        ctx.fillText(node.label, pos.x, pos.y - (node.sublabel ? 10 : 0));
 
         if (node.sublabel) {
           ctx.fillStyle = node.type === 'center' ? 'rgba(255,255,255,0.7)' : 'rgba(15,17,12,0.5)';
-          ctx.font = `${node.type === 'center' ? 11 : 9}px Montserrat, system-ui, sans-serif`;
-          ctx.fillText(node.sublabel, pos.x, pos.y + 10);
+          ctx.font = `${node.type === 'center' ? 13 : 10}px Montserrat, system-ui, sans-serif`;
+          ctx.fillText(node.sublabel, pos.x, pos.y + 12);
         }
       });
 
