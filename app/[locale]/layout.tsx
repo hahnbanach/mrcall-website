@@ -5,6 +5,7 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { GoogleTagManagerHead, GoogleTagManagerNoScript } from '@/components/GoogleTagManager';
+import TrackingProvider from '@/components/TrackingProvider';
 import { SITE } from '@/lib/constants';
 import { routing } from '@/i18n/routing';
 import '../globals.css';
@@ -91,9 +92,11 @@ export default async function RootLayout({
         <GoogleTagManagerNoScript />
         <GoogleTagManagerHead />
         <NextIntlClientProvider>
-          <Header />
-          <main>{children}</main>
-          <Footer />
+          <TrackingProvider locale={locale}>
+            <Header />
+            <main>{children}</main>
+            <Footer />
+          </TrackingProvider>
         </NextIntlClientProvider>
       </body>
     </html>

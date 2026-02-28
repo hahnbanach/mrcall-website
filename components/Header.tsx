@@ -6,6 +6,8 @@ import { useLocale, useTranslations } from 'next-intl';
 import { Link, useRouter, usePathname } from '@/i18n/navigation';
 import PillButton from './PillButton';
 import { URLS, NAV_LINKS } from '@/lib/constants';
+import { trackLanguageSwitch, trackCta, trackOutbound } from '@/lib/tracking';
+import { getDashboardUid } from '@/lib/auth';
 import { routing } from '@/i18n/routing';
 
 const LOCALE_LABELS: Record<string, string> = {
@@ -22,6 +24,7 @@ const LOCALE_LABELS: Record<string, string> = {
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [langOpen, setLangOpen] = useState(false);
+  const [uid, setUid] = useState<string | null>(null);
   const t = useTranslations('common');
   const tNav = useTranslations('nav');
   const locale = useLocale();
@@ -29,6 +32,9 @@ export default function Header() {
   const pathname = usePathname();
 
   useEffect(() => {
+    // Detect logged-in dashboard user via cross-domain cookie
+    setUid(getDashboardUid());
+
     const handleScroll = () => {
       setScrolled(window.scrollY > 20);
     };
@@ -37,6 +43,7 @@ export default function Header() {
   }, []);
 
   const handleLocaleChange = (newLocale: string) => {
+    trackLanguageSwitch(locale, newLocale);
     router.replace(pathname, { locale: newLocale });
     setLangOpen(false);
   };
@@ -115,15 +122,31 @@ export default function Header() {
               )}
             </div>
 
-            <a
-              href={URLS.signin}
-              className="text-sm text-brand-black/70 hover:text-brand-black transition-colors hidden sm:inline"
-            >
-              {t('signIn')}
-            </a>
-            <PillButton href={URLS.signup} size="small" external>
-              {t('tryFree')}
-            </PillButton>
+            {uid ? (
+              // Logged-in user: show "My Dashboard" link
+              <a
+                href={URLS.signin}
+                className="text-sm font-medium text-brand-blue hover:text-brand-black transition-colors"
+              >
+                {t('myDashboard')}
+              </a>
+            ) : (
+              // Not logged in: show "Sign In" + "Try Free"
+              <>
+                <a
+                  href={URLS.signin}
+                  onClick={() => trackOutbound(URLS.signin, locale)}
+                  className="text-sm text-brand-black/70 hover:text-brand-black transition-colors hidden sm:inline"
+                >
+                  {t('signIn')}
+                </a>
+                <span onClick={() => trackCta('header_try_free', locale)}>
+                  <PillButton href={URLS.signup} size="small" external>
+                    {t('tryFree')}
+                  </PillButton>
+                </span>
+              </>
+            )}
           </div>
         </nav>
       </div>

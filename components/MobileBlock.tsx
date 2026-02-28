@@ -1,13 +1,15 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import PhoneMockup from './PhoneMockup';
 import { URLS } from '@/lib/constants';
+import { trackAppStore } from '@/lib/tracking';
 
 export default function MobileBlock() {
   const t = useTranslations('mobile');
   const tc = useTranslations('common');
+  const locale = useLocale();
 
   const features = [
     t('featureNativeApps'),
@@ -76,6 +78,7 @@ export default function MobileBlock() {
                 href={URLS.appStoreIos}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() => trackAppStore('ios', locale)}
                 className="inline-flex items-center gap-2.5 h-[48px] px-5 bg-brand-black text-white rounded-xl hover:bg-brand-grey-80 transition-colors"
               >
                 <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
@@ -90,6 +93,7 @@ export default function MobileBlock() {
                 href={URLS.appStoreAndroid}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() => trackAppStore('android', locale)}
                 className="inline-flex items-center gap-2.5 h-[48px] px-5 bg-brand-black text-white rounded-xl hover:bg-brand-grey-80 transition-colors"
               >
                 <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">

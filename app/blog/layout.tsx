@@ -4,6 +4,7 @@ import { NextIntlClientProvider } from 'next-intl';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { GoogleTagManagerHead, GoogleTagManagerNoScript } from '@/components/GoogleTagManager';
+import TrackingProvider from '@/components/TrackingProvider';
 import messages from '@/messages/en.json';
 import '../globals.css';
 
@@ -42,9 +43,11 @@ export default function BlogLayout({
         <GoogleTagManagerNoScript />
         <GoogleTagManagerHead />
         <NextIntlClientProvider locale="en" messages={messages}>
-          <Header />
-          <main>{children}</main>
-          <Footer />
+          <TrackingProvider locale="en">
+            <Header />
+            <main>{children}</main>
+            <Footer />
+          </TrackingProvider>
         </NextIntlClientProvider>
       </body>
     </html>

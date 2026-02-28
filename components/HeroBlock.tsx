@@ -1,15 +1,17 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import PillButton from './PillButton';
 import TranscriptSimulator from './TranscriptSimulator';
 import { URLS, USE_CASE_KEYS } from '@/lib/constants';
+import { trackCta } from '@/lib/tracking';
 
 export default function HeroBlock() {
   const t = useTranslations('hero');
   const tBadges = useTranslations('useCaseBadges');
   const tCommon = useTranslations('common');
+  const locale = useLocale();
 
   return (
     <section className="relative min-h-screen flex items-center pt-20 pb-16 overflow-hidden">
@@ -32,9 +34,11 @@ export default function HeroBlock() {
               {t('smeTagline')}
             </p>
             <div className="mt-10 flex flex-col sm:flex-row gap-4">
-              <PillButton href={URLS.signup} external>
-                {tCommon('tryFree')}
-              </PillButton>
+              <span onClick={() => trackCta('hero_try_free', locale)}>
+                <PillButton href={URLS.signup} external>
+                  {tCommon('tryFree')}
+                </PillButton>
+              </span>
               <PillButton href="#how-it-works" variant="secondary" size="large">
                 {t('seeHowItWorks')}
               </PillButton>

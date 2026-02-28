@@ -2,15 +2,23 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
+import { trackDemo } from '@/lib/tracking';
 
 type DemoState = 'idle' | 'consent' | 'active';
 
 export default function TalkToMrCallBlock() {
   const t = useTranslations('talkToMrCall');
+  const locale = useLocale();
   const [state, setState] = useState<DemoState>('idle');
 
+  const handleTalkClick = () => {
+    trackDemo('start', locale);
+    setState('consent');
+  };
+
   const handleStartConversation = () => {
+    trackDemo('consent', locale);
     // TODO: Insert MrCall voice widget / WebRTC / VAPI integration here
     setState('active');
   };
@@ -49,7 +57,7 @@ export default function TalkToMrCallBlock() {
                   transition={{ duration: 0.3 }}
                 >
                   <button
-                    onClick={() => setState('consent')}
+                    onClick={handleTalkClick}
                     className="inline-flex items-center justify-center gap-3 h-[66px] rounded-[33px] px-12 bg-brand-blue text-white font-bold text-lg cursor-pointer hover:bg-brand-grey-80 transition-colors duration-300"
                   >
                     <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">

@@ -1,13 +1,15 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import PillButton from './PillButton';
 import { URLS, PRICING_PLANS } from '@/lib/constants';
+import { trackCta } from '@/lib/tracking';
 
 export default function PricingBlock() {
   const t = useTranslations('pricing');
   const tc = useTranslations('common');
+  const locale = useLocale();
 
   return (
     <section id="pricing" className="py-24 lg:py-32">
@@ -61,12 +63,12 @@ export default function PricingBlock() {
                 {/* Plan name */}
                 <h3 className="text-lg font-bold text-brand-black">{planName}</h3>
 
-                {/* Price — using Noto Serif accent font */}
+                {/* Price */}
                 <div className="mt-4 mb-1">
-                  <span className="font-[family-name:var(--font-noto-serif)] italic text-5xl font-bold text-brand-black">
+                  <span className="text-5xl font-bold text-brand-black">
                     {t('currency')}{t(`${plan.key}Price` as 'essentialPrice' | 'starterPrice' | 'professionalPrice')}
                   </span>
-                  <span className="font-[family-name:var(--font-noto-serif)] italic text-lg font-bold text-brand-black/60 ms-1">
+                  <span className="text-lg font-bold text-brand-black/60 ms-1">
                     {t('perMonth')}
                   </span>
                 </div>
@@ -93,15 +95,17 @@ export default function PricingBlock() {
                 </ul>
 
                 {/* CTA */}
-                <PillButton
-                  href={URLS.signup}
-                  variant={plan.featured ? 'primary' : 'secondary'}
-                  size="small"
-                  className="w-full"
-                  external
-                >
-                  {tc('getStarted')}
-                </PillButton>
+                <span onClick={() => trackCta(`pricing_${plan.key}`, locale)}>
+                  <PillButton
+                    href={URLS.signup}
+                    variant={plan.featured ? 'primary' : 'secondary'}
+                    size="small"
+                    className="w-full"
+                    external
+                  >
+                    {tc('getStarted')}
+                  </PillButton>
+                </span>
               </motion.div>
             );
           })}
