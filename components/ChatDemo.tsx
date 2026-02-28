@@ -11,11 +11,11 @@ export default function ChatDemo() {
   const userMessage = t('userMessage');
 
   const agentSteps = [
-    { icon: '\u{1F9E0}', text: t('stepAnalyzing') },
-    { icon: '\u{1F3E0}', text: t('stepKnowledgeBase') },
-    { icon: '\u{1F4CB}', text: t('stepMemory') },
-    { icon: '\u{1F4C5}', text: t('stepCalendar') },
-    { icon: '\u2705', text: t('stepReady') },
+    { icon: '🧠', text: t('stepAnalyzing') },
+    { icon: '🏠', text: t('stepKnowledgeBase') },
+    { icon: '📋', text: t('stepMemory') },
+    { icon: '📅', text: t('stepCalendar') },
+    { icon: '✅', text: t('stepReady') },
   ];
 
   const [step, setStep] = useState(0);

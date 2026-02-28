@@ -41,12 +41,12 @@ export default function RelationshipBlock() {
             className="lg:col-span-1 space-y-4"
           >
             <ContextCard
-              icon="\u{1F4DE}"
+              icon="📞"
               title={t('calledTwice')}
               detail={t('calledTwiceDetail')}
             />
             <ContextCard
-              icon="\u26A0\uFE0F"
+              icon="⚠️"
               title={t('invoiceIssue')}
               detail={t('invoiceDetail')}
             />
@@ -66,12 +66,12 @@ export default function RelationshipBlock() {
             className="lg:col-span-1 space-y-4"
           >
             <ContextCard
-              icon="\u{1F4E7}"
+              icon="📧"
               title={t('emailReceived')}
               detail={t('emailDetail')}
             />
             <ContextCard
-              icon="\u{1F4C5}"
+              icon="📅"
               title={t('meetingScheduled')}
               detail={t('meetingDetail')}
             />
