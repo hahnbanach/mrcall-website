@@ -120,7 +120,11 @@
     "cancel": "Annulla",
     "connecting": "Connessione a MrCall...",
     "widgetPlaceholder": "Segnaposto widget vocale — il codice di integrazione verrà fornito.",
-    "endDemo": "Termina demo"
+    "endDemo": "Termina demo",
+    "checking": "Verifica disponibilità...",
+    "limitReached": "Limite giornaliero raggiunto",
+    "limitReachedDesc": "Hai esaurito le conversazioni demo di oggi. Torna domani per riprovare!",
+    "signInForMore": "Accedi per avere fino a 10 demo al giorno"
   },
   "roadmap": {
     "label": "Roadmap delle funzionalità",

@@ -37,7 +37,8 @@ mrcall-website/
 │   │   ├── page.tsx           # Blog listing
 │   │   └── [slug]/page.tsx    # Individual blog post (MDX)
 │   ├── api/
-│   │   └── track/route.ts     # POST /api/track — event tracking endpoint
+│   │   ├── track/route.ts     # POST /api/track — event tracking endpoint
+│   │   └── demo-check/route.ts # POST /api/demo-check — demo rate limit gate
 │   └── globals.css            # Tailwind CSS v4 theme + custom styles
 ├── components/
 │   ├── Header.tsx             # Navigation + language switcher (8 locales)

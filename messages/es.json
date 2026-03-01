@@ -120,7 +120,11 @@
     "cancel": "Cancelar",
     "connecting": "Conectando con MrCall...",
     "widgetPlaceholder": "Espacio reservado para el widget de voz: se proporcionará el código de integración.",
-    "endDemo": "Finalizar demo"
+    "endDemo": "Finalizar demo",
+    "checking": "Comprobando disponibilidad...",
+    "limitReached": "Límite diario alcanzado",
+    "limitReachedDesc": "Has agotado todas tus conversaciones de demostración por hoy. ¡Vuelve mañana!",
+    "signInForMore": "Inicia sesión para hasta 10 demos al día"
   },
   "roadmap": {
     "label": "Hoja de ruta",

@@ -120,7 +120,11 @@
     "cancel": "Abbrechen",
     "connecting": "Verbindung zu MrCall wird hergestellt...",
     "widgetPlaceholder": "Sprach-Widget-Platzhalter — Integrationscode wird bereitgestellt.",
-    "endDemo": "Demo beenden"
+    "endDemo": "Demo beenden",
+    "checking": "Verfügbarkeit wird geprüft...",
+    "limitReached": "Tageslimit erreicht",
+    "limitReachedDesc": "Sie haben heute alle Demo-Gespräche aufgebraucht. Kommen Sie morgen wieder!",
+    "signInForMore": "Anmelden für bis zu 10 Demos pro Tag"
   },
   "roadmap": {
     "label": "Funktions-Roadmap",

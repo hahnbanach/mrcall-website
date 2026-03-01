@@ -3,25 +3,84 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLocale, useTranslations } from 'next-intl';
-import { trackDemo } from '@/lib/tracking';
+import { trackDemo, getSessionId, track } from '@/lib/tracking';
+import { getDashboardUid } from '@/lib/auth';
+import { URLS } from '@/lib/constants';
 
-type DemoState = 'idle' | 'consent' | 'active';
+type DemoState = 'idle' | 'consent' | 'checking' | 'active' | 'limited';
+
+const DEMO_COOKIE = 'mrcall_demo';
+const DEMO_LIMIT_ANONYMOUS = 3;
+const DEMO_LIMIT_LOGGED_IN = 10;
+
+function getDemoCount(): number {
+  if (typeof document === 'undefined') return 0;
+  const match = document.cookie.match(/(?:^|;\s*)mrcall_demo=(\d+)/);
+  return match ? parseInt(match[1], 10) : 0;
+}
+
+function setDemoCookie(count: number) {
+  document.cookie = `${DEMO_COOKIE}=${count}; Path=/; SameSite=Lax; Secure; Max-Age=86400`;
+}
 
 export default function TalkToMrCallBlock() {
   const t = useTranslations('talkToMrCall');
+  const tc = useTranslations('common');
   const locale = useLocale();
   const [state, setState] = useState<DemoState>('idle');
 
   const handleTalkClick = () => {
+    // Quick client-side pre-check via cookie (server is the real gate)
+    const count = getDemoCount();
+    const uid = getDashboardUid();
+    const limit = uid ? DEMO_LIMIT_LOGGED_IN : DEMO_LIMIT_ANONYMOUS;
+
+    if (count >= limit) {
+      track('demo_limit_reached', { locale, metadata: { source: 'cookie' } });
+      setState('limited');
+      return;
+    }
+
     trackDemo('start', locale);
     setState('consent');
   };
 
-  const handleStartConversation = () => {
-    trackDemo('consent', locale);
-    // TODO: Insert MrCall voice widget / WebRTC / VAPI integration here
-    setState('active');
+  const handleStartConversation = async () => {
+    setState('checking');
+
+    try {
+      const res = await fetch('/api/demo-check', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          sessionId: getSessionId(),
+          uid: getDashboardUid(),
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!data.allowed) {
+        // Update cookie to reflect server-side count
+        setDemoCookie(data.used);
+        track('demo_limit_reached', { locale, metadata: { source: 'server', used: data.used, limit: data.limit } });
+        setState('limited');
+        return;
+      }
+
+      // Server says OK — update cookie, track consent, start demo
+      setDemoCookie(data.used + 1);
+      trackDemo('consent', locale);
+      // TODO: Insert MrCall voice widget / WebRTC / VAPI integration here
+      setState('active');
+    } catch {
+      // On error, allow the demo — don't block UX due to network issues
+      trackDemo('consent', locale);
+      setState('active');
+    }
   };
+
+  const uid = typeof document !== 'undefined' ? getDashboardUid() : null;
 
   return (
     <section className="py-24 lg:py-32 bg-brand-light-grey">
@@ -45,7 +104,7 @@ export default function TalkToMrCallBlock() {
             </p>
           </motion.div>
 
-          {/* CTA / Consent / Active area */}
+          {/* CTA / Consent / Checking / Active / Limited area */}
           <div className="mt-10">
             <AnimatePresence mode="wait">
               {state === 'idle' && (
@@ -112,6 +171,24 @@ export default function TalkToMrCallBlock() {
                 </motion.div>
               )}
 
+              {state === 'checking' && (
+                <motion.div
+                  key="checking"
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={{ duration: 0.3 }}
+                  className="flex flex-col items-center gap-3"
+                >
+                  <motion.div
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+                    className="w-8 h-8 border-3 border-brand-blue/20 border-t-brand-blue rounded-full"
+                  />
+                  <p className="text-sm text-brand-black/50">{t('checking')}</p>
+                </motion.div>
+              )}
+
               {state === 'active' && (
                 <motion.div
                   key="active"
@@ -144,6 +221,43 @@ export default function TalkToMrCallBlock() {
                       {t('endDemo')}
                     </button>
                   </div>
+                </motion.div>
+              )}
+
+              {state === 'limited' && (
+                <motion.div
+                  key="limited"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.4 }}
+                  className="bg-white rounded-2xl p-8 shadow-lg border border-brand-orange/30 max-w-lg mx-auto text-center"
+                >
+                  <div className="w-12 h-12 rounded-full bg-brand-orange/10 flex items-center justify-center mx-auto mb-4">
+                    <svg className="w-6 h-6 text-brand-orange" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </div>
+                  <h3 className="text-lg font-bold text-brand-black mb-2">{t('limitReached')}</h3>
+                  <p className="text-sm text-brand-black/60 leading-relaxed mb-6">
+                    {t('limitReachedDesc')}
+                  </p>
+
+                  {!uid && (
+                    <a
+                      href={URLS.signin}
+                      className="inline-flex items-center justify-center gap-2 h-[44px] rounded-[22px] px-8 bg-brand-blue text-white font-bold text-sm hover:bg-brand-grey-80 transition-colors duration-300 mb-3"
+                    >
+                      {t('signInForMore')}
+                    </a>
+                  )}
+
+                  <button
+                    onClick={() => setState('idle')}
+                    className="block mx-auto text-sm text-brand-black/40 hover:text-brand-black/60 transition-colors cursor-pointer mt-2"
+                  >
+                    {tc('backToHome')}
+                  </button>
                 </motion.div>
               )}
             </AnimatePresence>

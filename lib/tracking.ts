@@ -24,7 +24,7 @@ function generateSessionId(): string {
   return `${ts}-${rand}`;
 }
 
-function getSessionId(): string {
+export function getSessionId(): string {
   if (typeof window === 'undefined') return '';
 
   let sid = localStorage.getItem(SESSION_KEY);
@@ -108,6 +108,7 @@ export type TrackEventType =
   | 'cta_click'
   | 'demo_start'
   | 'demo_consent'
+  | 'demo_limit_reached'
   | 'pricing_view'
   | 'app_store_click'
   | 'language_switch'

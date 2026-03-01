@@ -120,7 +120,11 @@
     "cancel": "Cancel",
     "connecting": "Connecting to MrCall...",
     "widgetPlaceholder": "Voice widget placeholder — integration code will be provided.",
-    "endDemo": "End demo"
+    "endDemo": "End demo",
+    "checking": "Checking availability...",
+    "limitReached": "Daily limit reached",
+    "limitReachedDesc": "You've used all your demo conversations for today. Come back tomorrow to try again!",
+    "signInForMore": "Sign in for up to 10 demos per day"
   },
   "roadmap": {
     "label": "Feature Roadmap",

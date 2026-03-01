@@ -120,7 +120,11 @@
     "cancel": "Annullér",
     "connecting": "Forbinder til MrCall...",
     "widgetPlaceholder": "Pladsholder for stemmewidget — integrationskode vil blive leveret.",
-    "endDemo": "Afslut demo"
+    "endDemo": "Afslut demo",
+    "checking": "Tjekker tilgængelighed...",
+    "limitReached": "Daglig grænse nået",
+    "limitReachedDesc": "Du har brugt alle dine demo-samtaler for i dag. Kom tilbage i morgen!",
+    "signInForMore": "Log ind for op til 10 demoer om dagen"
   },
   "roadmap": {
     "label": "Funktionskøreplan",

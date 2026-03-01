@@ -70,11 +70,33 @@ Next.js API route (Vercel serverless function):
 #### Allowed Event Types
 
 ```
-pageview, cta_click, demo_start, demo_consent, pricing_view,
-app_store_click, language_switch, scroll_depth, outbound_click
+pageview, cta_click, demo_start, demo_consent, demo_limit_reached,
+pricing_view, app_store_click, language_switch, scroll_depth, outbound_click
 ```
 
-### 3. Auto Pageview Tracking (`components/TrackingProvider.tsx`)
+### 3. Demo Rate Limiting (`app/api/demo-check/route.ts`)
+
+Server-side gate for the "Talk to MrCall" voice demo. Checks how many `demo_consent` events the user has fired in the last 24 hours and returns whether they're allowed to start another.
+
+| User Type | Limit | Identifier |
+|-----------|-------|------------|
+| Anonymous (no `mrcall_uid` cookie) | **3 demos/day** | `session_id` |
+| Logged-in (has `mrcall_uid` cookie) | **10 demos/day** | `metadata.uid` |
+
+**Flow:**
+1. User clicks "Talk to MrCall" → client-side cookie pre-check (`mrcall_demo` cookie stores today's count)
+2. If pre-check passes → consent screen appears
+3. User clicks "Start conversation" → `POST /api/demo-check` with `{ sessionId, uid? }`
+4. Server queries `website_events` for `demo_consent` count in last 24h
+5. Returns `{ allowed, remaining, limit, used }`
+6. If allowed → consent cookie updated, `demo_consent` event tracked, demo starts
+7. If denied → `demo_limit_reached` event tracked, "limit reached" screen shown
+
+**Cookie:** `mrcall_demo` — stores daily demo count. `Path=/; SameSite=Lax; Secure; Max-Age=86400`. Used for fast client-side pre-check only; server is the real gate.
+
+Anonymous users who hit the limit see a "Sign in for up to 10 demos per day" CTA.
+
+### 4. Auto Pageview Tracking (`components/TrackingProvider.tsx`)
 
 React component that wraps the app (inside `NextIntlClientProvider`) and automatically fires a `pageview` event whenever `usePathname()` changes.
 
@@ -82,7 +104,7 @@ Included in both:
 - `app/[locale]/layout.tsx` — main site (all locales)
 - `app/blog/layout.tsx` — blog (English only)
 
-### 4. Database Connection (`lib/db.ts`)
+### 5. Database Connection (`lib/db.ts`)
 
 Singleton `pg.Pool` configured for Vercel serverless:
 - Max 5 connections (serverless instances are short-lived)
@@ -90,7 +112,7 @@ Singleton `pg.Pool` configured for Vercel serverless:
 - 5s connection timeout
 - SSL configurable via env var
 
-### 5. Database Table (`scripts/create-tracking-table.sql`)
+### 6. Database Table (`scripts/create-tracking-table.sql`)
 
 `website_events` table in the `public` schema, converted to a TimescaleDB hypertable (7-day chunks).
 
@@ -108,6 +130,7 @@ Singleton `pg.Pool` configured for Vercel serverless:
 | MobileBlock (Google Play) | `app_store_click` | `{"store": "android"}` |
 | TalkToMrCallBlock (Talk) | `demo_start` | locale |
 | TalkToMrCallBlock (Consent) | `demo_consent` | locale |
+| TalkToMrCallBlock (Limit) | `demo_limit_reached` | `{"source": "cookie"/"server", "used": N, "limit": N}` |
 
 ## Environment Variables
 

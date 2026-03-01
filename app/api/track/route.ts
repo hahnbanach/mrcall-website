@@ -25,6 +25,7 @@ const ALLOWED_EVENTS = new Set([
   'cta_click',
   'demo_start',
   'demo_consent',
+  'demo_limit_reached',
   'pricing_view',
   'app_store_click',
   'language_switch',
