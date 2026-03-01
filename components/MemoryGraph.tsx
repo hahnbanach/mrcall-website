@@ -111,6 +111,25 @@ export default function MemoryGraph() {
         ctx.fill();
       });
 
+      // Helper: wrap text into lines that fit within maxWidth
+      const wrapText = (text: string, maxWidth: number, font: string): string[] => {
+        ctx.font = font;
+        const words = text.split(' ');
+        const lines: string[] = [];
+        let current = '';
+        for (const word of words) {
+          const test = current ? `${current} ${word}` : word;
+          if (ctx.measureText(test).width > maxWidth && current) {
+            lines.push(current);
+            current = word;
+          } else {
+            current = test;
+          }
+        }
+        if (current) lines.push(current);
+        return lines;
+      };
+
       // Draw nodes
       nodes.forEach((node) => {
         const pos = getNodePos(node);
@@ -125,26 +144,58 @@ export default function MemoryGraph() {
           ctx.fill();
         }
 
-        // Node circle
+        // Node circle with drop shadow for data nodes
+        ctx.save();
+        if (node.type !== 'center') {
+          ctx.shadowColor = 'rgba(0, 0, 0, 0.10)';
+          ctx.shadowBlur = 16;
+          ctx.shadowOffsetY = 4;
+        }
         ctx.beginPath();
         ctx.arc(pos.x, pos.y, r, 0, Math.PI * 2);
         ctx.fillStyle = node.type === 'center' ? node.color : '#FFFFFF';
         ctx.fill();
-        ctx.strokeStyle = node.color;
-        ctx.lineWidth = node.type === 'center' ? 0 : 2.5;
-        if (node.type !== 'center') ctx.stroke();
+        ctx.restore();
 
-        // Label
-        ctx.fillStyle = node.type === 'center' ? '#FFFFFF' : '#0F110C';
-        ctx.font = `bold ${node.type === 'center' ? 17 : 12}px Montserrat, system-ui, sans-serif`;
+        // Border (no shadow)
+        if (node.type !== 'center') {
+          ctx.beginPath();
+          ctx.arc(pos.x, pos.y, r, 0, Math.PI * 2);
+          ctx.strokeStyle = node.color;
+          ctx.lineWidth = 3;
+          ctx.stroke();
+        }
+
+        // Text layout
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.fillText(node.label, pos.x, pos.y - (node.sublabel ? 10 : 0));
 
+        const isCenter = node.type === 'center';
+        const labelFontSize = isCenter ? 17 : 11;
+        const subFontSize = isCenter ? 13 : 10;
+        const labelFont = `bold ${labelFontSize}px Montserrat, system-ui, sans-serif`;
+        const subFont = `${subFontSize}px Montserrat, system-ui, sans-serif`;
+        const maxTextWidth = r * 1.7;
+        const lineH = labelFontSize + 3;
+
+        const lines = wrapText(node.label, maxTextWidth, labelFont);
+        const labelBlockH = lines.length * lineH;
+        const sublabelBlockH = node.sublabel ? subFontSize + 4 : 0;
+        const totalH = labelBlockH + sublabelBlockH;
+        const startY = pos.y - totalH / 2 + lineH / 2;
+
+        // Draw label lines
+        ctx.font = labelFont;
+        ctx.fillStyle = isCenter ? '#FFFFFF' : '#0F110C';
+        lines.forEach((line, i) => {
+          ctx.fillText(line, pos.x, startY + i * lineH);
+        });
+
+        // Draw sublabel
         if (node.sublabel) {
-          ctx.fillStyle = node.type === 'center' ? 'rgba(255,255,255,0.7)' : 'rgba(15,17,12,0.5)';
-          ctx.font = `${node.type === 'center' ? 13 : 10}px Montserrat, system-ui, sans-serif`;
-          ctx.fillText(node.sublabel, pos.x, pos.y + 12);
+          ctx.font = subFont;
+          ctx.fillStyle = isCenter ? 'rgba(255,255,255,0.7)' : 'rgba(15,17,12,0.5)';
+          ctx.fillText(node.sublabel, pos.x, startY + labelBlockH + 2);
         }
       });
 
