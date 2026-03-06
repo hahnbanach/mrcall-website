@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLocale, useTranslations } from 'next-intl';
-import { trackDemo, getSessionId, track } from '@/lib/tracking';
+import { trackDemo, track, checkDemoLimit, buildDashboardUrl } from '@/lib/tracking';
 import { getDashboardUid } from '@/lib/auth';
 import { URLS } from '@/lib/constants';
 
@@ -36,7 +36,7 @@ export default function TalkToMrCallBlock() {
     const limit = uid ? DEMO_LIMIT_LOGGED_IN : DEMO_LIMIT_ANONYMOUS;
 
     if (count >= limit) {
-      track('demo_limit_reached', { locale, metadata: { source: 'cookie' } });
+      track('custom', { locale, metadata: { action: 'demo_limit_reached', source: 'cookie' } });
       setState('limited');
       return;
     }
@@ -49,21 +49,12 @@ export default function TalkToMrCallBlock() {
     setState('checking');
 
     try {
-      const res = await fetch('/api/demo-check', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          sessionId: getSessionId(),
-          uid: getDashboardUid(),
-        }),
-      });
-
-      const data = await res.json();
+      const data = await checkDemoLimit();
 
       if (!data.allowed) {
         // Update cookie to reflect server-side count
         setDemoCookie(data.used);
-        track('demo_limit_reached', { locale, metadata: { source: 'server', used: data.used, limit: data.limit } });
+        track('custom', { locale, metadata: { action: 'demo_limit_reached', source: 'server', used: data.used, limit: data.limit } });
         setState('limited');
         return;
       }
@@ -245,7 +236,7 @@ export default function TalkToMrCallBlock() {
 
                   {!uid && (
                     <a
-                      href={URLS.signin}
+                      href={buildDashboardUrl(URLS.signin)}
                       className="inline-flex items-center justify-center gap-2 h-[44px] rounded-[22px] px-8 bg-brand-blue text-white font-bold text-sm hover:bg-brand-grey-80 transition-colors duration-300 mb-3"
                     >
                       {t('signInForMore')}

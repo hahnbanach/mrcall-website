@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import { URLS, CONTACT, SITE } from '@/lib/constants';
+import { buildDashboardUrl } from '@/lib/tracking';
 
 export default function Footer() {
   const t = useTranslations('footer');
@@ -39,12 +40,12 @@ export default function Footer() {
             </h3>
             <ul className="space-y-3">
               <li>
-                <a href={URLS.signup} className="text-white/70 hover:text-white transition-colors text-sm">
+                <a href={buildDashboardUrl(URLS.signup)} className="text-white/70 hover:text-white transition-colors text-sm">
                   {tCommon('getStarted')}
                 </a>
               </li>
               <li>
-                <a href={URLS.signin} className="text-white/70 hover:text-white transition-colors text-sm">
+                <a href={buildDashboardUrl(URLS.signin)} className="text-white/70 hover:text-white transition-colors text-sm">
                   {tCommon('signIn')}
                 </a>
               </li>

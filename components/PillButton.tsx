@@ -1,6 +1,7 @@
 'use client';
 
 import { Link } from '@/i18n/navigation';
+import { buildDashboardUrl } from '@/lib/tracking';
 
 type Variant = 'primary' | 'secondary' | 'orange';
 type Size = 'large' | 'small';
@@ -25,6 +26,16 @@ const sizeStyles: Record<Size, string> = {
   small: 'h-[44px] rounded-[22px] px-6 text-sm font-bold',
 };
 
+/** Check if a URL points to the MrCall dashboard */
+function isDashboardUrl(url: string): boolean {
+  try {
+    const parsed = new URL(url);
+    return parsed.hostname === 'dashboard.mrcall.ai' || parsed.hostname === 'app.mrcall.ai';
+  } catch {
+    return false;
+  }
+}
+
 export default function PillButton({
   href,
   children,
@@ -36,16 +47,19 @@ export default function PillButton({
   const baseStyles = 'inline-flex items-center justify-center whitespace-nowrap cursor-pointer';
   const classes = `${baseStyles} ${variantStyles[variant]} ${sizeStyles[size]} ${className}`;
 
+  // Auto-append _tsid to dashboard URLs for cross-product attribution
+  const resolvedHref = isDashboardUrl(href) ? buildDashboardUrl(href) : href;
+
   if (external) {
     return (
-      <a href={href} target="_blank" rel="noopener noreferrer" className={classes}>
+      <a href={resolvedHref} target="_blank" rel="noopener noreferrer" className={classes}>
         {children}
       </a>
     );
   }
 
   return (
-    <Link href={href} className={classes}>
+    <Link href={resolvedHref} className={classes}>
       {children}
     </Link>
   );

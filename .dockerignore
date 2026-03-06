@@ -1,0 +1,13 @@
+node_modules
+.next
+.git
+.claude
+.env*
+.vercel
+docs
+scripts
+.DS_Store
+.gitignore
+eslint.config.mjs
+*.tsbuildinfo
+next-env.d.ts

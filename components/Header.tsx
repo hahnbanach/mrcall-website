@@ -6,7 +6,7 @@ import { useLocale, useTranslations } from 'next-intl';
 import { Link, useRouter, usePathname } from '@/i18n/navigation';
 import PillButton from './PillButton';
 import { URLS, NAV_LINKS } from '@/lib/constants';
-import { trackLanguageSwitch, trackCta, trackOutbound } from '@/lib/tracking';
+import { trackLanguageSwitch, trackCta, trackOutbound, buildDashboardUrl } from '@/lib/tracking';
 import { getDashboardUid } from '@/lib/auth';
 import { routing } from '@/i18n/routing';
 
@@ -125,7 +125,7 @@ export default function Header() {
             {uid ? (
               // Logged-in user: show "My Dashboard" link
               <a
-                href={URLS.signin}
+                href={buildDashboardUrl(URLS.signin)}
                 className="text-sm font-medium text-brand-blue hover:text-brand-black transition-colors"
               >
                 {t('myDashboard')}
@@ -134,7 +134,7 @@ export default function Header() {
               // Not logged in: show "Sign In" + "Try Free"
               <>
                 <a
-                  href={URLS.signin}
+                  href={buildDashboardUrl(URLS.signin)}
                   onClick={() => trackOutbound(URLS.signin, locale)}
                   className="text-sm text-brand-black/70 hover:text-brand-black transition-colors hidden sm:inline"
                 >

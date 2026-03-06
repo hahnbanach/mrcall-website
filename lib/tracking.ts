@@ -1,11 +1,11 @@
 /**
  * Client-side website event tracking.
  *
- * Sends events to /api/track which writes them to the Scaleway PostgreSQL DB.
+ * Sends events to the Starchat backend at /mrcall/v1/tracking/events.
  * Designed to be lightweight, non-blocking, and privacy-respectful:
  * - No cookies — uses localStorage for anonymous session ID
  * - No fingerprinting — only collects screen width + user agent
- * - Uses sendBeacon for reliable delivery (even on page unload)
+ * - Uses fetch with keepalive for reliable delivery (even on page unload)
  * - Silently fails — tracking should never break the user experience
  */
 
@@ -13,7 +13,34 @@ import { getDashboardUid } from './auth';
 
 const SESSION_KEY = 'mrcall_sid';
 const UTM_KEY = 'mrcall_utm';
-const TRACK_ENDPOINT = '/api/track';
+
+// ─── Starchat Endpoint URLs (runtime detection) ─────────────
+
+function getTrackingUrl(): string {
+  if (typeof window === 'undefined') return '';
+  const host = window.location.hostname;
+  if (host === 'mrcall.ai' || host === 'www.mrcall.ai')
+    return 'https://starchat.mrcall.ai/mrcall/v1/tracking/events';
+  if (host === 'dev.mrcall.ai')
+    return 'https://starchat-dev.mrcall.ai/mrcall/v1/tracking/events';
+  return ''; // local dev: log only
+}
+
+function getDemoCheckUrl(): string {
+  if (typeof window === 'undefined') return '';
+  const host = window.location.hostname;
+  if (host === 'mrcall.ai' || host === 'www.mrcall.ai')
+    return 'https://starchat.mrcall.ai/mrcall/v1/tracking/demo-check';
+  if (host === 'dev.mrcall.ai')
+    return 'https://starchat-dev.mrcall.ai/mrcall/v1/tracking/demo-check';
+  return '';
+}
+
+function getTrackingApiKey(): string {
+  // In production, this should be set as NEXT_PUBLIC_TRACKING_API_KEY
+  // It's a write-only key for the tracking table — safe to expose client-side
+  return process.env.NEXT_PUBLIC_TRACKING_API_KEY || '';
+}
 
 // ─── Session ID ──────────────────────────────────────────────
 
@@ -85,6 +112,13 @@ function captureUtmParams(): UtmParams {
 
 const UTM_PARAMS = new Set(['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term']);
 
+// Denylist: never track query params that look like secrets or credentials
+const SENSITIVE_PARAMS = new Set([
+  'token', 'key', 'apikey', 'api_key', 'secret', 'password', 'pass',
+  'auth', 'authorization', 'access_token', 'refresh_token', 'session',
+  'credential', 'jwt', 'bearer', 'otp', 'code', 'pin', 'ssn',
+]);
+
 function captureQueryParams(): Record<string, string> {
   if (typeof window === 'undefined') return {};
 
@@ -92,8 +126,9 @@ function captureQueryParams(): Record<string, string> {
   const result: Record<string, string> = {};
 
   params.forEach((value, key) => {
-    // Skip UTM params — they're already handled by captureUtmParams()
-    if (!UTM_PARAMS.has(key.toLowerCase())) {
+    const lower = key.toLowerCase();
+    // Skip UTM params (handled separately) and anything that looks like a secret
+    if (!UTM_PARAMS.has(lower) && !SENSITIVE_PARAMS.has(lower)) {
       result[key] = value;
     }
   });
@@ -106,14 +141,20 @@ function captureQueryParams(): Record<string, string> {
 export type TrackEventType =
   | 'pageview'
   | 'cta_click'
-  | 'demo_start'
   | 'demo_consent'
-  | 'demo_limit_reached'
-  | 'pricing_view'
-  | 'app_store_click'
-  | 'language_switch'
+  | 'demo_start'
+  | 'demo_end'
+  | 'signup_start'
+  | 'signup_complete'
   | 'scroll_depth'
-  | 'outbound_click';
+  | 'time_on_page'
+  | 'form_interaction'
+  | 'video_play'
+  | 'video_complete'
+  | 'download'
+  | 'share'
+  | 'error'
+  | 'custom';
 
 export interface TrackOptions {
   /** Current page locale (e.g. 'en', 'it', 'ar') */
@@ -130,6 +171,9 @@ export function track(eventType: TrackEventType, options: TrackOptions = {}) {
     console.debug('[tracking]', eventType, options);
     return;
   }
+
+  const trackingUrl = getTrackingUrl();
+  if (!trackingUrl) return; // No endpoint configured for this hostname
 
   const utm = captureUtmParams();
   const queryParams = captureQueryParams();
@@ -151,20 +195,87 @@ export function track(eventType: TrackEventType, options: TrackOptions = {}) {
     },
   };
 
-  // Prefer sendBeacon (works on page unload), fall back to fetch
   const body = JSON.stringify(payload);
+  const apiKey = getTrackingApiKey();
 
-  if (navigator.sendBeacon) {
-    navigator.sendBeacon(TRACK_ENDPOINT, new Blob([body], { type: 'application/json' }));
-  } else {
-    fetch(TRACK_ENDPOINT, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body,
-      keepalive: true,
-    }).catch(() => {
-      // Silently fail — tracking should never break UX
-    });
+  // Use fetch with keepalive (same reliability as sendBeacon for page unload)
+  // sendBeacon doesn't support custom headers — we need X-Tracking-Key
+  fetch(trackingUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      ...(apiKey && { 'X-Tracking-Key': apiKey }),
+    },
+    body,
+    keepalive: true,
+  }).catch(() => {
+    // Silently fail — tracking should never break UX
+  });
+}
+
+// ─── Demo Check ──────────────────────────────────────────────
+
+export interface DemoCheckResponse {
+  allowed: boolean;
+  remaining: number;
+  limit: number;
+  used: number;
+}
+
+export async function checkDemoLimit(): Promise<DemoCheckResponse> {
+  const demoCheckUrl = getDemoCheckUrl();
+  const apiKey = getTrackingApiKey();
+
+  if (!demoCheckUrl) {
+    // Local dev or unknown hostname — allow
+    return { allowed: true, remaining: 3, limit: 3, used: 0 };
+  }
+
+  const res = await fetch(demoCheckUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      ...(apiKey && { 'X-Tracking-Key': apiKey }),
+    },
+    body: JSON.stringify({
+      sessionId: getSessionId(),
+      uid: getDashboardUid() || undefined,
+    }),
+  });
+
+  return res.json();
+}
+
+// ─── Dashboard URL Builder (Attribution Bridging) ────────────
+
+/**
+ * Build a dashboard URL with _tsid (tracking session ID) appended.
+ * This enables cross-product attribution: website visit → dashboard signup → paying customer.
+ * The dashboard captures _tsid and writes it to the business as TRACKING_SESSION_ID.
+ */
+export function buildDashboardUrl(url: string): string {
+  if (typeof window === 'undefined') return url;
+
+  try {
+    const parsed = new URL(url);
+    const sessionId = getSessionId();
+    if (sessionId) {
+      parsed.searchParams.set('_tsid', sessionId);
+    }
+
+    // Forward current UTM params if present in the current page URL
+    const currentParams = new URLSearchParams(window.location.search);
+    const utmKeys = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'];
+    for (const key of utmKeys) {
+      const value = currentParams.get(key);
+      if (value && !parsed.searchParams.has(key)) {
+        parsed.searchParams.set(key, value);
+      }
+    }
+
+    return parsed.toString();
+  } catch {
+    return url;
   }
 }
 
@@ -175,9 +286,9 @@ export function trackCta(buttonName: string, locale?: string) {
   track('cta_click', { locale, metadata: { button: buttonName } });
 }
 
-/** Track an app store badge click */
+/** Track an app store badge click (mapped to cta_click with store metadata) */
 export function trackAppStore(store: 'ios' | 'android', locale?: string) {
-  track('app_store_click', { locale, metadata: { store } });
+  track('cta_click', { locale, metadata: { button: `app_store_${store}`, store } });
 }
 
 /** Track demo interaction */
@@ -185,12 +296,12 @@ export function trackDemo(step: 'start' | 'consent', locale?: string) {
   track(step === 'start' ? 'demo_start' : 'demo_consent', { locale });
 }
 
-/** Track language switch */
+/** Track language switch (mapped to custom event) */
 export function trackLanguageSwitch(from: string, to: string) {
-  track('language_switch', { locale: to, metadata: { from, to } });
+  track('custom', { locale: to, metadata: { action: 'language_switch', from, to } });
 }
 
-/** Track outbound link click */
+/** Track outbound link click (mapped to custom event) */
 export function trackOutbound(url: string, locale?: string) {
-  track('outbound_click', { locale, metadata: { url } });
+  track('custom', { locale, metadata: { action: 'outbound_click', url } });
 }
