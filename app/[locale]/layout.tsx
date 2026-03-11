@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Script from 'next/script';
 import { Montserrat, Noto_Serif_Display, Noto_Sans_Arabic } from 'next/font/google';
 import { NextIntlClientProvider } from 'next-intl';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
@@ -91,6 +92,10 @@ export default async function RootLayout({
       >
         <GoogleTagManagerNoScript />
         <GoogleTagManagerHead />
+        <Script
+          src="/MrCallDirectVoice.bundle.min.js"
+          strategy="afterInteractive"
+        />
         <NextIntlClientProvider>
           <TrackingProvider locale={locale}>
             <Header />
