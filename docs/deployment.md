@@ -58,7 +58,7 @@ The `test` branch auto-deploys to `dev.mrcall.ai` for staging and QA before merg
 | X-Content-Type-Options | `nosniff` |
 | Referrer-Policy | `strict-origin-when-cross-origin` |
 | Permissions-Policy | `geolocation=(), camera=(), microphone=(self), payment=()` |
-| Content-Security-Policy | `default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com blob:; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://www.googletagmanager.com https://www.google-analytics.com; font-src 'self'; connect-src 'self' https://starchat.mrcall.ai https://starchat-dev.mrcall.ai https://www.google-analytics.com https://analytics.google.com https://api.mrcall.ai wss://api.mrcall.ai; frame-src https://www.googletagmanager.com; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'` |
+| Content-Security-Policy | `default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com blob: data:; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://www.googletagmanager.com https://www.google-analytics.com; font-src 'self'; connect-src 'self' https://starchat.mrcall.ai https://starchat-dev.mrcall.ai https://www.google-analytics.com https://analytics.google.com https://api.mrcall.ai wss://api.mrcall.ai; frame-src https://www.googletagmanager.com; worker-src 'self' blob: data:; object-src 'none'; base-uri 'self'; form-action 'self'` |
 
 ## GTM (Google Tag Manager)
 
