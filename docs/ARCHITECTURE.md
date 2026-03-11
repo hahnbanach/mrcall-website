@@ -163,3 +163,38 @@ All section components are client components (`'use client'`) using:
 - `useLocale()` for locale-aware behavior
 - Framer Motion `motion.div` with `whileInView` for scroll animations
 - Tracking calls on key user interactions
+
+### 11. Voice Demo (MrCallDirectVoice SDK)
+
+The "Live Demo" section (`TalkToMrCallBlock`) lets visitors have a real AI voice conversation with MrCall directly from the website.
+
+**Architecture:**
+
+```
+Browser                          Next.js Server              StarChat (api.mrcall.ai)
+  │                                   │                              │
+  │  POST /api/voice-init             │                              │
+  │──────────────────────────────────►│  POST /mrcall/v1/voice/init  │
+  │                                   │  + Basic Auth credentials    │
+  │                                   │─────────────────────────────►│
+  │                                   │◄─────────────────────────────│
+  │◄──────────────────────────────────│  { wsUrl, sessionId }        │
+  │  { wsUrl, sessionId }            │                              │
+  │                                   │                              │
+  │  WebSocket (wss://api.mrcall.ai)  │                              │
+  │──────────────────────────────────────────────────────────────────►│
+  │◄────────────────────────────────────────────────────────────────►│
+  │  Binary audio frames (Opus/PCM16) │                              │
+```
+
+**Backend-init pattern (secure):** API credentials (`MRCALL_VOICE_AUTH_USER`, `MRCALL_VOICE_AUTH_PASSWORD`) are stored as server-only environment variables (no `NEXT_PUBLIC_` prefix). The browser calls `/api/voice-init`, the Next.js API route calls StarChat's init endpoint with Basic Auth, and returns only the `wsUrl` to the browser. Credentials never reach the client.
+
+**SDK:** The MrCallDirectVoice JS SDK (`public/MrCallDirectVoice.bundle.min.js`, sourced from the `mrcalldirectvoicejs` repository) is loaded via `<Script>` in the root layout (`strategy="afterInteractive"`). It provides zero-dependency browser-based voice calls via WebSocket binary audio streaming with Opus compression (automatic PCM16 fallback). The component uses `startStream(wsUrl)` — not `startCall()` — since the init is handled server-side. To update the SDK, copy the new bundle from the `mrcalldirectvoicejs` repo's `dist/` folder.
+
+**CSP and Permissions-Policy changes:**
+- `script-src`: Added `blob:` (AudioWorklet processors)
+- `connect-src`: Added `https://api.mrcall.ai wss://api.mrcall.ai` (WebSocket streaming)
+- `worker-src`: Added `blob:` (AudioWorklet)
+- `Permissions-Policy`: Changed `microphone=()` → `microphone=(self)` (required for `getUserMedia`)
+
+**Rate limiting:** Unchanged — the existing Starchat demo-check endpoint gates demo access (3/day anonymous, 10/day logged-in).

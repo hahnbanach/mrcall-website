@@ -27,6 +27,10 @@ The build generates:
 | Variable | Description | Notes |
 |----------|-------------|-------|
 | `NEXT_PUBLIC_TRACKING_API_KEY` | Write-only API key for Starchat tracking endpoint | Public by design (exposed client-side, like Segment/Mixpanel keys). Only allows writing non-sensitive tracking events. |
+| `MRCALL_VOICE_BASE_URL` | StarChat API base URL for voice init | Server-only. e.g. `https://api.mrcall.ai` |
+| `MRCALL_VOICE_BUSINESS_ID` | Business ID for the website's voice demo agent | Server-only. |
+| `MRCALL_VOICE_AUTH_USER` | API username for voice init Basic Auth | Server-only. Never exposed to browser. |
+| `MRCALL_VOICE_AUTH_PASSWORD` | API password for voice init Basic Auth | Server-only. Never exposed to browser. |
 
 ### Not Required
 
@@ -34,11 +38,15 @@ The build generates:
 - No Google Analytics ID needed (tracking is self-hosted via Starchat)
 - GTM ID (`GTM-MW4TX4N`) is hardcoded in `components/GoogleTagManager.tsx`
 
+> **Note:** If voice env vars are missing, the `/api/voice-init` route returns 503 and the demo gracefully shows an error message. The rest of the website works fine.
+
 ## DNS / Domain
 
-- **Production**: `mrcall.ai` (Scaleway Containers)
-- **Dev**: `dev.mrcall.ai` (Scaleway Containers)
+- **Production**: `mrcall.ai` (Scaleway Containers) — `main` branch
+- **Dev / Staging**: `dev.mrcall.ai` (Scaleway Containers) — `test` branch
 - **Dashboard**: `dashboard.mrcall.ai` (separate Vue.js app)
+
+The `test` branch auto-deploys to `dev.mrcall.ai` for staging and QA before merging to `main`.
 
 ## Security Headers
 
@@ -49,8 +57,8 @@ The build generates:
 | X-Frame-Options | `DENY` |
 | X-Content-Type-Options | `nosniff` |
 | Referrer-Policy | `strict-origin-when-cross-origin` |
-| Permissions-Policy | `geolocation=(), camera=(), microphone=(), payment=()` |
-| Content-Security-Policy | `default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://www.googletagmanager.com https://www.google-analytics.com; font-src 'self'; connect-src 'self' https://starchat.mrcall.ai https://starchat-dev.mrcall.ai https://www.google-analytics.com https://analytics.google.com; frame-src https://www.googletagmanager.com; object-src 'none'; base-uri 'self'; form-action 'self'` |
+| Permissions-Policy | `geolocation=(), camera=(), microphone=(self), payment=()` |
+| Content-Security-Policy | `default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com blob:; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://www.googletagmanager.com https://www.google-analytics.com; font-src 'self'; connect-src 'self' https://starchat.mrcall.ai https://starchat-dev.mrcall.ai https://www.google-analytics.com https://analytics.google.com https://api.mrcall.ai wss://api.mrcall.ai; frame-src https://www.googletagmanager.com; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'` |
 
 ## GTM (Google Tag Manager)
 
