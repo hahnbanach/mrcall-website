@@ -64,17 +64,6 @@ export default function TalkToMrCallBlock() {
   }, []);
 
   const handleTalkClick = () => {
-    // Quick client-side pre-check via cookie (server is the real gate)
-    const count = getDemoCount();
-    const uid = getDashboardUid();
-    const limit = uid ? DEMO_LIMIT_LOGGED_IN : DEMO_LIMIT_ANONYMOUS;
-
-    if (count >= limit) {
-      track('custom', { locale, metadata: { action: 'demo_limit_reached', source: 'cookie' } });
-      setState('limited');
-      return;
-    }
-
     trackDemo('start', locale);
     setState('consent');
   };
@@ -159,28 +148,10 @@ export default function TalkToMrCallBlock() {
   const handleStartConversation = async () => {
     setState('checking');
 
-    try {
-      const data = await checkDemoLimit();
-
-      if (!data.allowed) {
-        // Update cookie to reflect server-side count
-        setDemoCookie(data.used);
-        track('custom', { locale, metadata: { action: 'demo_limit_reached', source: 'server', used: data.used, limit: data.limit } });
-        setState('limited');
-        return;
-      }
-
-      // Server says OK — update cookie, track consent, start voice call
-      setDemoCookie(data.used + 1);
-      trackDemo('consent', locale);
-      setState('active');
-      startVoiceCall();
-    } catch {
-      // On error, allow the demo — don't block UX due to network issues
-      trackDemo('consent', locale);
-      setState('active');
-      startVoiceCall();
-    }
+    // TODO: re-enable demo limit check when tracking API is ready
+    trackDemo('consent', locale);
+    setState('active');
+    startVoiceCall();
   };
 
   const handleEndDemo = () => {
