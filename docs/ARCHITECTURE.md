@@ -54,6 +54,7 @@ mrcall-website/
 │       └── terms/             # Terms of Service — en.tsx, it.tsx, de.tsx, da.tsx, fr.tsx, es.tsx, pt.tsx, ar.tsx
 ├── lib/
 │   ├── auth.ts                # Cross-domain auth cookie reader (getDashboardUid)
+│   ├── blog.ts                # MDX blog post loader (frontmatter parsing, listing)
 │   ├── constants.ts           # Non-translatable data: URLs, pricing structure, nav, contact info
 │   └── tracking.ts            # Client-side event tracking (fetch with keepalive to Starchat)
 ├── i18n/
@@ -82,7 +83,7 @@ mrcall-website/
 
 ### 1. Static Generation with Dynamic Locale Segment
 
-All marketing pages use `generateStaticParams()` to pre-render for all 8 locales at build time. This means 8 × 6 pages = **48 static HTML pages** plus the blog and API route.
+All marketing pages use `generateStaticParams()` to pre-render for all 8 locales at build time. This means 8 × 6 pages = **48 static HTML pages** plus the blog.
 
 Every `[locale]` page must call `setRequestLocale(locale)` for next-intl to work with static rendering.
 
