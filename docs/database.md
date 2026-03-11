@@ -14,7 +14,7 @@
 The database is hosted on **Scaleway** and is shared between:
 - **StarChat** (Scala backend) — reads/writes sessions, business data, decision tables
 - **Dashboard** (Vue.js frontend) — reads via StarChat REST API
-- **Website** (Next.js) — writes to `website_events` via `/api/track`
+- **Website** (Next.js) — writes to `tracking_events` via Starchat API (`/mrcall/v1/tracking/events`)
 
 Access requires either VPN or IP whitelisting.
 
@@ -87,11 +87,11 @@ Access requires either VPN or IP whitelisting.
 | `instance_registry` | StarChat service instances |
 | `qrtz_*` | Quartz scheduler tables (Java cron) |
 
-### Website Tracking (Added by us)
+### Website Tracking
 
 | Table | Purpose |
 |-------|---------|
-| `website_events` | TimescaleDB hypertable tracking mrcall.ai visitor events |
+| `tracking_events` | TimescaleDB hypertable tracking mrcall.ai visitor events (written by Starchat) |
 
 See [tracking.md](./tracking.md) for full schema and usage.
 
@@ -100,7 +100,7 @@ See [tracking.md](./tracking.md) for full schema and usage.
 The database uses TimescaleDB for time-series optimization:
 
 - **`sessions`** — hypertable partitioned by `start_timestamp` (45+ chunks, covering call history)
-- **`website_events`** — hypertable partitioned by `created_at` (7-day chunks)
+- **`tracking_events`** — hypertable partitioned by `created_at` (7-day chunks)
 
 TimescaleDB features available:
 - `time_bucket()` for aggregation queries

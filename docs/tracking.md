@@ -2,20 +2,23 @@
 
 ## Overview
 
-The website tracks user events to the shared **Scaleway PostgreSQL/TimescaleDB** database — the same database used by the MrCall backend (StarChat) and dashboard. This enables cross-product attribution: linking anonymous website visitors to dashboard signups and paying customers.
+The website tracks user events via the **Starchat** backend API, which writes to the shared **Scaleway PostgreSQL/TimescaleDB** database — the same database used by the MrCall backend and dashboard. This enables cross-product attribution: linking anonymous website visitors to dashboard signups and paying customers.
 
 No Google Analytics. No third-party analytics cookies. GTM (`GTM-MW4TX4N`) is kept only for future ad pixel support.
 
 ## Architecture
 
 ```
-┌─────────────┐     sendBeacon/fetch     ┌──────────────────┐     pg pool     ┌──────────────────────┐
-│   Browser    │  ────────────────────►   │  /api/track      │  ──────────►    │  Scaleway PostgreSQL │
-│  (tracking.  │   POST JSON              │  (Vercel fn)     │   INSERT        │  + TimescaleDB       │
-│   ts)        │                          │  rate-limited    │                 │  website_events      │
-└─────────────┘                          │  validated       │                 │  (hypertable)        │
-                                          └──────────────────┘                 └──────────────────────┘
+┌─────────────┐   fetch (keepalive)    ┌──────────────────────┐     doobie     ┌──────────────────────┐
+│   Browser    │  ──────────────────►   │  Starchat            │  ──────────►   │  Scaleway PostgreSQL │
+│  (tracking.  │   POST JSON            │  /mrcall/v1/tracking │   INSERT       │  + TimescaleDB       │
+│   ts)        │   + API key header     │  /events             │                │  tracking_events     │
+└─────────────┘                         │  rate-limited        │                │  (hypertable)        │
+                                        │  validated           │                └──────────────────────┘
+                                        └──────────────────────┘
 ```
+
+The website has **no direct database connection**. All tracking goes through Starchat's public endpoint.
 
 ## Components
 
@@ -25,10 +28,27 @@ Lightweight browser-side utility:
 - **No cookies** — uses `localStorage` for anonymous session ID (`mrcall_sid`)
 - **UTM persistence** — captures UTM params from URL, stores in `sessionStorage` for attribution across pageviews
 - **All query params** — captures any non-UTM URL parameters (e.g. `?ref=partner`, `?promo=summer`) and includes them in `metadata.queryParams`
+- **Sensitive param denylist** — skips params that look like secrets (token, key, password, api_key, secret, auth, access_token, refresh_token, session, credential, jwt, bearer, otp, code, pin, ssn)
 - **Cross-domain auth** — reads the `mrcall_uid` cookie (set by the dashboard) to include the Firebase UID in `metadata.uid` for cross-product attribution
-- **`sendBeacon`** for reliable delivery (works even on page unload)
+- **`fetch` with `keepalive: true`** for reliable delivery (works even on page unload)
 - **Silent failures** — tracking errors never break the user experience
 - **Dev mode** — logs to console instead of hitting the API
+
+#### Endpoint Detection
+
+The tracking URL is detected at runtime based on hostname:
+- `mrcall.ai` / `www.mrcall.ai` → `https://starchat.mrcall.ai/mrcall/v1/tracking/events`
+- `dev.mrcall.ai` → `https://starchat-dev.mrcall.ai/mrcall/v1/tracking/events`
+- Local development → console logging only (no API calls)
+
+#### Authentication
+
+Events are sent with an API key in the `Authorization` header:
+```
+Authorization: Bearer <NEXT_PUBLIC_TRACKING_API_KEY>
+```
+
+This is a **write-only** public key (like Segment/Mixpanel analytics keys). It's exposed client-side by design — it only allows writing non-sensitive tracking events. The key is set via the `NEXT_PUBLIC_TRACKING_API_KEY` environment variable.
 
 #### Functions
 
@@ -54,29 +74,12 @@ Lightweight browser-side utility:
 | `userAgent` | `navigator.userAgent` |
 | `screenWidth` | `window.screen.width` |
 | `metadata` | Event-specific JSONB (e.g. `{"button": "hero_try_free"}`) |
-| `metadata.queryParams` | Non-UTM URL query params (e.g. `{"ref": "partner", "promo": "summer"}`) |
+| `metadata.queryParams` | Non-UTM, non-sensitive URL query params (e.g. `{"ref": "partner", "promo": "summer"}`) |
 | `metadata.uid` | Firebase UID from cross-domain `mrcall_uid` cookie (if logged in) |
 
-### 2. API Endpoint (`app/api/track/route.ts`)
+### 2. Demo Rate Limiting
 
-Next.js API route (Vercel serverless function):
-
-- **Rate limiting**: 60 events/minute per IP (in-memory counter, resets on cold start)
-- **Input validation**: Whitelisted event types only, required `sessionId` + `eventType`
-- **String sanitization**: All inputs truncated to column max lengths
-- **Geo enrichment**: Reads `x-vercel-ip-country` and `x-vercel-ip-city` headers
-- **Fail-safe**: Returns 200 even on DB errors (tracking must never block UX)
-
-#### Allowed Event Types
-
-```
-pageview, cta_click, demo_start, demo_consent, demo_limit_reached,
-pricing_view, app_store_click, language_switch, scroll_depth, outbound_click
-```
-
-### 3. Demo Rate Limiting (`app/api/demo-check/route.ts`)
-
-Server-side gate for the "Talk to MrCall" voice demo. Checks how many `demo_consent` events the user has fired in the last 24 hours and returns whether they're allowed to start another.
+Server-side gate for the "Talk to MrCall" voice demo, implemented in Starchat at `/mrcall/v1/tracking/demo-check`. Checks how many `demo_consent` events the user has fired in the last 24 hours and returns whether they're allowed to start another.
 
 | User Type | Limit | Identifier |
 |-----------|-------|------------|
@@ -86,35 +89,23 @@ Server-side gate for the "Talk to MrCall" voice demo. Checks how many `demo_cons
 **Flow:**
 1. User clicks "Talk to MrCall" → client-side cookie pre-check (`mrcall_demo` cookie stores today's count)
 2. If pre-check passes → consent screen appears
-3. User clicks "Start conversation" → `POST /api/demo-check` with `{ sessionId, uid? }`
-4. Server queries `website_events` for `demo_consent` count in last 24h
+3. User clicks "Start conversation" → `POST /mrcall/v1/tracking/demo-check` with `{ sessionId, uid? }`
+4. Starchat queries `tracking_events` for `demo_consent` count in last 24h
 5. Returns `{ allowed, remaining, limit, used }`
 6. If allowed → consent cookie updated, `demo_consent` event tracked, demo starts
 7. If denied → `demo_limit_reached` event tracked, "limit reached" screen shown
 
-**Cookie:** `mrcall_demo` — stores daily demo count. `Path=/; SameSite=Lax; Secure; Max-Age=86400`. Used for fast client-side pre-check only; server is the real gate.
+**Cookie:** `mrcall_demo` — stores daily demo count. `Path=/; SameSite=Lax; Secure; Max-Age=86400`. Used for fast client-side pre-check only; Starchat is the real gate.
 
 Anonymous users who hit the limit see a "Sign in for up to 10 demos per day" CTA.
 
-### 4. Auto Pageview Tracking (`components/TrackingProvider.tsx`)
+### 3. Auto Pageview Tracking (`components/TrackingProvider.tsx`)
 
 React component that wraps the app (inside `NextIntlClientProvider`) and automatically fires a `pageview` event whenever `usePathname()` changes.
 
 Included in both:
 - `app/[locale]/layout.tsx` — main site (all locales)
 - `app/blog/layout.tsx` — blog (English only)
-
-### 5. Database Connection (`lib/db.ts`)
-
-Singleton `pg.Pool` configured for Vercel serverless:
-- Max 5 connections (serverless instances are short-lived)
-- 10s idle timeout
-- 5s connection timeout
-- SSL configurable via env var
-
-### 6. Database Table (`scripts/create-tracking-table.sql`)
-
-`website_events` table in the `public` schema, converted to a TimescaleDB hypertable (7-day chunks).
 
 ## Currently Tracked Interactions
 
@@ -135,37 +126,14 @@ Singleton `pg.Pool` configured for Vercel serverless:
 ## Environment Variables
 
 ```env
-TRACKING_DB_HOST=51.159.26.37
-TRACKING_DB_PORT=51494
-TRACKING_DB_NAME=mrcall-test
-TRACKING_DB_USER=mrcalltest
-TRACKING_DB_PASS=<password>
-TRACKING_DB_SSL=false
+NEXT_PUBLIC_TRACKING_API_KEY=<write-only API key for Starchat tracking endpoint>
 ```
 
-These must be set in the **Vercel project settings** (not committed to git).
-
-## Deployment Checklist
-
-1. **Run the SQL migration** on Scaleway DB:
-   ```bash
-   psql -h 51.159.26.37 -p 51494 -U mrcalltest -d mrcall-test -f scripts/create-tracking-table.sql
-   ```
-
-2. **Whitelist Vercel IPs** in the Scaleway firewall (or the DB security group) for port 51494.
-
-3. **Set env vars** in Vercel dashboard → Settings → Environment Variables.
-
-4. **Deploy** — the `/api/track` route will start accepting events.
-
-5. **Verify** — visit the site, check the DB:
-   ```sql
-   SELECT * FROM website_events ORDER BY created_at DESC LIMIT 10;
-   ```
+This is the only tracking-related env var. The website has no database credentials — Starchat handles all DB writes.
 
 ## Development
 
-In development (`NODE_ENV=development`), tracking events are logged to the browser console instead of being sent to the API:
+In development (`NODE_ENV=development` or local hostname), tracking events are logged to the browser console instead of being sent to the API:
 ```
 [tracking] pageview {locale: 'en'}
 [tracking] cta_click {locale: 'en', metadata: {button: 'hero_try_free'}}
@@ -176,31 +144,31 @@ In development (`NODE_ENV=development`), tracking events are logged to the brows
 ```sql
 -- Daily pageviews by locale (last 30 days)
 SELECT locale, date_trunc('day', created_at) AS day, count(*)
-FROM website_events
+FROM tracking_events
 WHERE event_type = 'pageview' AND created_at > NOW() - INTERVAL '30 days'
 GROUP BY locale, day ORDER BY day DESC, count DESC;
 
 -- Top CTAs clicked (last 7 days)
 SELECT metadata->>'button' AS button, count(*)
-FROM website_events
+FROM tracking_events
 WHERE event_type = 'cta_click' AND created_at > NOW() - INTERVAL '7 days'
 GROUP BY button ORDER BY count DESC;
 
 -- Full visitor journey
 SELECT event_type, page_path, metadata, created_at
-FROM website_events
+FROM tracking_events
 WHERE session_id = '<session_id>'
 ORDER BY created_at;
 
 -- Country breakdown
 SELECT country, count(DISTINCT session_id) AS visitors, count(*) AS events
-FROM website_events
+FROM tracking_events
 WHERE created_at > NOW() - INTERVAL '30 days'
 GROUP BY country ORDER BY visitors DESC;
 
 -- Conversion funnel: pageview → CTA click → app store
 SELECT event_type, count(DISTINCT session_id) AS unique_sessions
-FROM website_events
+FROM tracking_events
 WHERE event_type IN ('pageview', 'cta_click', 'app_store_click')
   AND created_at > NOW() - INTERVAL '30 days'
 GROUP BY event_type;
@@ -259,20 +227,24 @@ Dashboard logout
 ```sql
 -- Find all website activity for a specific dashboard user
 SELECT event_type, page_path, metadata, created_at
-FROM website_events
+FROM tracking_events
 WHERE metadata->>'uid' = '<firebase_uid>'
 ORDER BY created_at;
 
 -- Which pages do logged-in users visit most?
 SELECT page_path, count(*) AS views
-FROM website_events
+FROM tracking_events
 WHERE metadata->>'uid' IS NOT NULL AND event_type = 'pageview'
 GROUP BY page_path ORDER BY views DESC;
 ```
 
 ## URL Query Parameter Tracking
 
-All non-UTM URL query parameters are automatically captured and stored in `metadata.queryParams`. This is useful for tracking partner referrals, promo codes, A/B test variants, or any custom campaign parameters.
+All non-UTM, non-sensitive URL query parameters are automatically captured and stored in `metadata.queryParams`. This is useful for tracking partner referrals, promo codes, A/B test variants, or any custom campaign parameters.
+
+### Sensitive Parameter Denylist
+
+Parameters matching the following names are never tracked: `token`, `key`, `apikey`, `api_key`, `secret`, `password`, `pass`, `auth`, `authorization`, `access_token`, `refresh_token`, `session`, `credential`, `jwt`, `bearer`, `otp`, `code`, `pin`, `ssn`.
 
 ### Example
 
@@ -288,38 +260,38 @@ A visit to `mrcall.ai/?ref=partner&promo=summer2025` produces:
 }
 ```
 
-UTM parameters (`utm_source`, `utm_medium`, `utm_campaign`, `utm_content`, `utm_term`) are excluded from `queryParams` — they're already stored in dedicated top-level columns.
+UTM parameters (`utm_source`, `utm_medium`, `utm_campaign`, `utm_content`, `utm_term`) are excluded from `queryParams` — they're stored in dedicated top-level columns.
 
 ### Useful Queries
 
 ```sql
 -- Top referral sources (non-UTM)
 SELECT metadata->'queryParams'->>'ref' AS ref_source, count(*)
-FROM website_events
+FROM tracking_events
 WHERE metadata->'queryParams'->>'ref' IS NOT NULL
   AND created_at > NOW() - INTERVAL '30 days'
 GROUP BY ref_source ORDER BY count DESC;
 
 -- Promo code usage
 SELECT metadata->'queryParams'->>'promo' AS promo, count(DISTINCT session_id) AS visitors
-FROM website_events
+FROM tracking_events
 WHERE metadata->'queryParams'->>'promo' IS NOT NULL
 GROUP BY promo ORDER BY visitors DESC;
 ```
 
-## Future: Cross-Product Attribution (Session-Level)
+## Cross-Product Attribution (Session-Level)
 
 In addition to the UID-based attribution above, session-level attribution is also possible. When a website visitor signs up on the dashboard (`dashboard.mrcall.ai`), the `mrcall_sid` from `localStorage` can be sent during registration. This creates a link:
 
 ```
-website_events.session_id  →  customers_registry.id (or business.owner)
+tracking_events.session_id  →  customers_registry.id (or business.owner)
 ```
 
 Enabling queries like:
 ```sql
 -- Which landing pages lead to paying customers?
 SELECT we.page_path, count(DISTINCT b.business_id) AS conversions
-FROM website_events we
+FROM tracking_events we
 JOIN customers_registry cr ON we.session_id = cr.document->>'website_session_id'
 JOIN business b ON cr.id = b.owner AND b.subscription_status = 'active'
 WHERE we.event_type = 'pageview'

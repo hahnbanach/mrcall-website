@@ -2,7 +2,7 @@
 
 ## Overview
 
-The MrCall marketing website (mrcall.ai) is a Next.js 16 application with internationalization for 8 languages, server-side rendering, static page generation, and custom event tracking to a shared PostgreSQL/TimescaleDB database on Scaleway.
+The MrCall marketing website (mrcall.ai) is a Next.js 16 application with internationalization for 8 languages, server-side rendering, static page generation, and custom event tracking via the Starchat backend API.
 
 ## Tech Stack
 
@@ -14,9 +14,8 @@ The MrCall marketing website (mrcall.ai) is a Next.js 16 application with intern
 | Animation | Framer Motion | 12.x |
 | i18n | next-intl | 4.8.x |
 | Blog | MDX via @next/mdx + gray-matter | 3.x |
-| Database | PostgreSQL + TimescaleDB (Scaleway) | — |
-| DB Client | pg (node-postgres) | 8.x |
-| Hosting | Vercel | — |
+| Tracking Backend | Starchat (Scala/Pekko HTTP) | — |
+| Hosting | Scaleway Containers | — |
 | Analytics | GTM (GTM-MW4TX4N) + custom tracking | — |
 
 ## Project Structure
@@ -29,16 +28,13 @@ mrcall-website/
 │   │   ├── page.tsx           # Homepage
 │   │   ├── contacts/page.tsx
 │   │   ├── usecases/page.tsx
-│   │   ├── privacy/page.tsx
-│   │   ├── terms/page.tsx
+│   │   ├── privacy/page.tsx   # Dynamic loader for per-locale privacy content
+│   │   ├── terms/page.tsx     # Dynamic loader for per-locale terms content
 │   │   └── cookie-policy/page.tsx
 │   ├── blog/                  # English-only blog (own root layout)
 │   │   ├── layout.tsx         # Standalone layout with NextIntlClientProvider locale="en"
 │   │   ├── page.tsx           # Blog listing
 │   │   └── [slug]/page.tsx    # Individual blog post (MDX)
-│   ├── api/
-│   │   ├── track/route.ts     # POST /api/track — event tracking endpoint
-│   │   └── demo-check/route.ts # POST /api/demo-check — demo rate limit gate
 │   └── globals.css            # Tailwind CSS v4 theme + custom styles
 ├── components/
 │   ├── Header.tsx             # Navigation + language switcher (8 locales)
@@ -51,11 +47,15 @@ mrcall-website/
 │   ├── GoogleTagManager.tsx   # GTM with GDPR consent defaults
 │   ├── PillButton.tsx         # Reusable CTA button (internal/external)
 │   └── ...                    # Other section components
+├── content/
+│   ├── blog/                  # MDX blog posts
+│   └── legal/                 # Per-locale legal page content (TSX components)
+│       ├── privacy/           # Privacy Policy — en.tsx, it.tsx, de.tsx, da.tsx, fr.tsx, es.tsx, pt.tsx, ar.tsx
+│       └── terms/             # Terms of Service — en.tsx, it.tsx, de.tsx, da.tsx, fr.tsx, es.tsx, pt.tsx, ar.tsx
 ├── lib/
 │   ├── auth.ts                # Cross-domain auth cookie reader (getDashboardUid)
-│   ├── constants.ts           # Non-translatable data: URLs, pricing structure, nav
-│   ├── db.ts                  # PostgreSQL connection pool (singleton)
-│   └── tracking.ts            # Client-side event tracking (sendBeacon + fetch)
+│   ├── constants.ts           # Non-translatable data: URLs, pricing structure, nav, contact info
+│   └── tracking.ts            # Client-side event tracking (fetch with keepalive to Starchat)
 ├── i18n/
 │   ├── routing.ts             # Locale list + routing config
 │   ├── request.ts             # Server-side message loading
@@ -69,17 +69,13 @@ mrcall-website/
 │   ├── es.json                # Spanish (European)
 │   ├── pt.json                # Portuguese (European)
 │   └── ar.json                # Arabic (MSA, RTL)
-├── content/
-│   └── blog/                  # MDX blog posts
-├── scripts/
-│   └── create-tracking-table.sql  # DB migration for website_events
 ├── docs/                      # This documentation
 ├── public/
 │   ├── favicon.svg            # MrCall pittogramma (blue circle)
 │   └── logos/                 # Brand assets
 ├── middleware.ts              # next-intl locale detection
-├── next.config.ts             # MDX plugin + blog locale redirects
-└── .env.example               # DB connection env vars template
+├── next.config.ts             # MDX plugin + blog locale redirects + security headers
+└── .env.example               # Environment variables template
 ```
 
 ## Key Architectural Decisions
@@ -110,14 +106,20 @@ When `locale === 'ar'`:
 - CSS uses logical properties throughout: `text-start`, `ms-*`, `ps-*`, `end-*`, `inset-x-0`
 - Directional icons use `rtl:scale-x-[-1]` to flip arrows
 
-### 5. Tracking: Own DB, Not Third-Party Analytics
+### 5. Tracking via Starchat Backend
 
-Instead of Google Analytics, events are tracked to the shared Scaleway PostgreSQL/TimescaleDB database (same DB as the MrCall backend). This enables:
+Instead of Google Analytics, events are tracked via the **Starchat** backend API (`/mrcall/v1/tracking/events`), which writes to the shared Scaleway PostgreSQL/TimescaleDB database. The website has no direct database connection — all tracking goes through Starchat's public endpoint with API key authentication. This enables:
 - Cross-product attribution (website visitor → dashboard signup → paying customer)
 - Full data ownership, no third-party data sharing
 - No analytics cookies needed (GDPR-friendly)
-- All URL query parameters tracked (not just UTM — also `?ref=`, `?promo=`, etc.)
+- All URL query parameters tracked (not just UTM — also `?ref=`, `?promo=`, etc.), with a denylist for sensitive params (tokens, passwords, keys)
 - Logged-in dashboard users identified via cross-domain `mrcall_uid` cookie
+- Demo rate limiting via Starchat's `/mrcall/v1/tracking/demo-check` endpoint
+
+The tracking URL is detected at runtime based on the hostname:
+- `mrcall.ai` / `www.mrcall.ai` → `https://starchat.mrcall.ai/mrcall/v1/tracking/events`
+- `dev.mrcall.ai` → `https://starchat-dev.mrcall.ai/mrcall/v1/tracking/events`
+- Local dev → console logging only
 
 GTM (`GTM-MW4TX4N`) is kept for future ad pixel support.
 
@@ -136,7 +138,25 @@ Three Google Fonts loaded:
 - **Noto Serif Display** (700 italic) — accent font for prices and headings (`--font-noto-serif`)
 - **Noto Sans Arabic** (400, 700) — Arabic locale only (`--font-arabic`)
 
-### 8. Component Pattern
+### 8. Security Headers
+
+`next.config.ts` sets security headers on all routes (`/(.*)`):
+
+| Header | Value |
+|--------|-------|
+| X-Frame-Options | `DENY` |
+| X-Content-Type-Options | `nosniff` |
+| Referrer-Policy | `strict-origin-when-cross-origin` |
+| Permissions-Policy | `geolocation=(), camera=(), microphone=(), payment=()` |
+| Content-Security-Policy | Allows self + GTM + Google Analytics + Starchat endpoints |
+
+### 9. Legal Content Pattern (Privacy & Terms)
+
+Legal pages (Privacy Policy, Terms of Service) use **per-locale TSX component files** in `content/legal/` rather than JSON message keys. This is because legal documents are 5–10 KB of structured HTML with headings, lists, and links — impractical for flat JSON.
+
+Each locale has its own file (e.g., `content/legal/privacy/en.tsx`, `content/legal/terms/it.tsx`) exporting a default React component. The page files (`app/[locale]/privacy/page.tsx`, `app/[locale]/terms/page.tsx`) use dynamic imports to load the correct locale at build time.
+
+### 10. Component Pattern
 
 All section components are client components (`'use client'`) using:
 - `useTranslations('namespace')` for localized strings
