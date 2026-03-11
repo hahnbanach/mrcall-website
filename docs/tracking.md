@@ -37,8 +37,7 @@ Lightweight browser-side utility:
 #### Endpoint Detection
 
 The tracking URL is detected at runtime based on hostname:
-- `mrcall.ai` / `www.mrcall.ai` → `https://starchat.mrcall.ai/mrcall/v1/tracking/events`
-- `dev.mrcall.ai` → `https://starchat-dev.mrcall.ai/mrcall/v1/tracking/events`
+- `mrcall.ai` / `www.mrcall.ai` / `dev.mrcall.ai` → `https://api.mrcall.ai/mrcall/v1/tracking/events`
 - Local development → console logging only (no API calls)
 
 #### Authentication

@@ -19,20 +19,16 @@ const UTM_KEY = 'mrcall_utm';
 function getTrackingUrl(): string {
   if (typeof window === 'undefined') return '';
   const host = window.location.hostname;
-  if (host === 'mrcall.ai' || host === 'www.mrcall.ai')
-    return 'https://starchat.mrcall.ai/mrcall/v1/tracking/events';
-  if (host === 'dev.mrcall.ai')
-    return 'https://starchat-dev.mrcall.ai/mrcall/v1/tracking/events';
+  if (host === 'mrcall.ai' || host === 'www.mrcall.ai' || host === 'dev.mrcall.ai')
+    return 'https://api.mrcall.ai/mrcall/v1/tracking/events';
   return ''; // local dev: log only
 }
 
 function getDemoCheckUrl(): string {
   if (typeof window === 'undefined') return '';
   const host = window.location.hostname;
-  if (host === 'mrcall.ai' || host === 'www.mrcall.ai')
-    return 'https://starchat.mrcall.ai/mrcall/v1/tracking/demo-check';
-  if (host === 'dev.mrcall.ai')
-    return 'https://starchat-dev.mrcall.ai/mrcall/v1/tracking/demo-check';
+  if (host === 'mrcall.ai' || host === 'www.mrcall.ai' || host === 'dev.mrcall.ai')
+    return 'https://api.mrcall.ai/mrcall/v1/tracking/demo-check';
   return '';
 }
 

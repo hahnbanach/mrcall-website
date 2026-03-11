@@ -25,7 +25,7 @@ const nextConfig: NextConfig = {
               "style-src 'self' 'unsafe-inline'",
               "img-src 'self' data: https://www.googletagmanager.com https://www.google-analytics.com",
               "font-src 'self'",
-              "connect-src 'self' https://starchat.mrcall.ai https://starchat-dev.mrcall.ai https://www.google-analytics.com https://analytics.google.com https://api.mrcall.ai wss://api.mrcall.ai",
+              "connect-src 'self' https://api.mrcall.ai wss://api.mrcall.ai https://www.google-analytics.com https://analytics.google.com",
               "frame-src https://www.googletagmanager.com",
               "worker-src 'self' blob: data:",
               "object-src 'none'",

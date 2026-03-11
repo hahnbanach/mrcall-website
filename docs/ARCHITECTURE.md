@@ -117,8 +117,7 @@ Instead of Google Analytics, events are tracked via the **Starchat** backend API
 - Demo rate limiting via Starchat's `/mrcall/v1/tracking/demo-check` endpoint
 
 The tracking URL is detected at runtime based on the hostname:
-- `mrcall.ai` / `www.mrcall.ai` → `https://starchat.mrcall.ai/mrcall/v1/tracking/events`
-- `dev.mrcall.ai` → `https://starchat-dev.mrcall.ai/mrcall/v1/tracking/events`
+- `mrcall.ai` / `www.mrcall.ai` / `dev.mrcall.ai` → `https://api.mrcall.ai/mrcall/v1/tracking/events`
 - Local dev → console logging only
 
 GTM (`GTM-MW4TX4N`) is kept for future ad pixel support.
