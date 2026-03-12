@@ -1,0 +1,59 @@
+---
+title: "Agentic Engineering"
+date: "2026-01-21"
+description: "If language is the invention that made us sapiens, engineering is the art that keeps those cathedrals standing. Today we face a new raw material: the intelligence of Large Language Models."
+tags: ["AI", "engineering", "agents", "LLM", "MrCall"]
+author: "Mario Alemi"
+---
+
+If language is the invention that made us _sapiens_, allowing us to build cathedrals of information, engineering is the art that keeps those cathedrals standing and makes them work. Today we are faced with a new raw material: the intelligence of Large Language Models. But there is a fundamental misunderstanding circulating among non-experts: the idea that it is enough to "talk" to the machine, that _prompting_ is a kind of magic formula. The reality, for those who build systems in production, is very different.
+
+Left to its own devices, LLM is a brain in amniotic fluid that knows nothing about our reality, an oracle that hallucinates with the same confidence with which it proclaims truths. To transform this power into useful work, structure is needed: _Agentic Engineering_.
+
+Below is a brief overview of the technologies available to Agent Engineers, and why they have emerged by analyzing the Problem, Solution, and Implementation cycle.
+
+## Let's harness chance
+
+### The problem of noise
+
+The historical problem is well known: LLMs have a limited context window and suffer from what we might call "attention dilution." If you load the entire project or write lengthy prompts, the model loses focus and ignores peripheral instructions. It's like shouting instructions at someone in a crowded room. The solution we adopt is _Context Injection_. Instead of keeping everything in memory at all times, we take a _Just-in-Time_ approach. We provide the model with only the operating manual strictly necessary for the next five minutes' task, removing everything else. In practical implementation, we use specific Markdown files that are called up via semantic anchors. When the system intercepts a command, it reads the dedicated manual and overwrites the generic System Prompt. The LLM forgets it is a generalist assistant and becomes a vertical expert, _here and now_.
+
+### The Problem of Unstructured Output
+
+Language models are designed for conversation, not for executing code. In the past, to make code interact with AI, we had to write fragile parsers to try to extract commands from discursive responses. The solution is native _Tool Use_. It doesn't add intelligence, it adds discipline. It's specific training that teaches the model to stop generating text and produce only structured objects (JSON), ready to be consumed by imperative code. We define a strict schema for each function. The model acts as a converter: it takes natural language input and guarantees syntactically perfect output.
+
+### The problem of semantics
+
+In classical programming, you have to map human intent to rigid machine codes. A simple _if statement_ risks ignoring crucial nuances such as work urgency or emotional tone. The solution lies in _Semantic Mapping_. Instead of forcing the input into numbers or Booleans, we configure the function parameters as descriptive text fields. The LLM acts as a universal translator that converts messy natural language into structured but meaningful parameters. If a user writes "if I don't have the monitor tomorrow, I'll lose a sale," the system deduces the level of urgency as "critical," allowing the backend to react accordingly.
+
+### The problem with goldfish
+
+The tools are _stateless_. Once the function is complete, the agent dies. Chat history helps, but it quickly fills up with background noise, confusing the model. The solution is a hierarchical memory, a _ReasoningBank_. We separate Execution (Agent) from Memory (Database). The Agent is disposable, the Memory is permanent. We don't save the entire chat. We use an LLM to "distill" the salient facts and save them in the DB at the end of each task. When the user returns, the system retrieves the exact state and injects it into the new agent's prompt, which can respond with immediate accuracy without having to reread the entire history.
+
+### The problem of the know-it-all
+
+Who connects the tools and memory? If we leave it up to the LLM in an endless chat, it gets lost. The solution is a _Procedural Control Loop_. The Orchestrator is a program in symbolic language, a cycle that manages the state. The LLM is used only as a "decision-making CPU" for each individual step, resetting the context each time. The cycle follows fixed steps: memory retrieval, decision, execution, update. This ensures that a shipping agent can never try to modify the database, simply because it does not have that tool in its ephemeral context.
+
+### The problem of rigidity
+
+Adding a new tool to large systems would require manually modifying the Orchestrator code for each new case. The solution is _Dynamic Discovery_. The Orchestrator does not have a fixed list of agents, but queries a registry. If it finds a new plugin, it adds it to its capabilities. When the user requests a new function, the semantic router associates the request with the tool description and instantiates the agent dynamically, without the need for source code changes.
+
+### Explicit vs Implicit
+
+How can we reconcile the need for absolute control with the fluidity required by customers? We use a _dual-track_ architecture. The first is a syntactic router (deterministic), which looks at the form of the message for safe and fast commands. The second is a Semantic Router (probabilistic): if it does not find explicit triggers, it analyzes the vector meaning of the request to deduce the necessary agent. It is the difference between typing a DOS command and asking a colleague for a favor.
+
+### The problem of fragility
+
+LLMs make mistakes and APIs fail. In a classic script, a technical error would cause the conversation to crash. The solution is the _Reflection Loop_. The error is not the end, it is new input. If a tool fails, the exception is reinserted into the LLM prompt as a system message: "Your call failed. Correct the parameters and try again." The model reads the error, corrects itself, and re-executes the call. The user often doesn't notice anything.
+
+### The problem of unpredictability
+
+How do you test software that responds with different words every time? The solution is _LLM-as-a-Judge_. We don't test words, we test intent satisfaction using a second LLM as a judge. We create a suite of evaluations where the "judge" determines whether the concepts expressed are correct, regardless of the lexical form used.
+
+### The problem with jailbreaking
+
+_Prompt Injection_ allows malicious users to manipulate the LLM to perform destructive actions. The solution is structural: _Sandbox & System Authority_. We isolate user input and segregate tools. A customer service agent should never have permission to delete data. We use XML tagging to encapsulate user input in the system prompt, making it clear to the model what is a command and what is just text to be processed.
+
+## Conclusion
+
+All this to say that artificial intelligence, in order to become a product, must stop being a game of imitation and become engineering. It is better to seek a robust answer rather than a witty one. Because in the end, reliability is the only true form of intelligence that matters to those who work.
