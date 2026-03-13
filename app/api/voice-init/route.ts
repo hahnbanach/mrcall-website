@@ -13,18 +13,25 @@ export async function POST(request: Request) {
     );
   }
 
-  let body: { username?: string; displayName?: string; email?: string } = {};
+  let body: { username?: string; displayName?: string; email?: string; encoding?: string; sampleRate?: number } = {};
   try {
     body = await request.json();
   } catch {
     // No body is fine — username/displayName are optional
   }
 
+  // encoding and sampleRate are determined client-side based on WebCodecs capability:
+  // - WebCodecs available (modern desktop/mobile) → opus + 24000
+  // - WebCodecs unavailable (iOS < 16.4, older Android) → pcm16 + 16000
+  // Using the client's value avoids a server-session/client-encoding mismatch.
+  const encoding = body.encoding === 'pcm16' ? 'pcm16' : 'opus';
+  const sampleRate = body.sampleRate ?? (encoding === 'opus' ? 24000 : 16000);
+
   // Build query params matching the SDK's init pattern (query params, no JSON body)
   const params = new URLSearchParams();
-  params.set('sampleRate', '24000');
+  params.set('sampleRate', String(sampleRate));
   params.set('username', body.username || 'website-visitor');
-  params.set('encoding', 'opus');
+  params.set('encoding', encoding);
   if (body.displayName) params.set('displayName', body.displayName);
   if (body.email) params.set('email', body.email);
 

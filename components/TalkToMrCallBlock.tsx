@@ -73,11 +73,25 @@ export default function TalkToMrCallBlock() {
     setErrorMessage(null);
 
     try {
-      // 1. Get wsUrl from our backend (credentials stay server-side)
+      // 1. Detect encoding capability before hitting the server.
+      //    The server creates the session with the encoding we request, so the
+      //    client and server must agree from the start.
+      //    Opus requires WebCodecs (AudioEncoder/AudioDecoder), available in:
+      //    - Chrome 94+, Edge 94+, modern Android Chrome
+      //    - Safari 16.4+ (iOS 16.4+)
+      //    Older iOS Safari and some Android browsers lack WebCodecs → use pcm16.
+      const opusSupported =
+        typeof window !== 'undefined' &&
+        typeof (window as unknown as { AudioEncoder?: unknown }).AudioEncoder !== 'undefined' &&
+        typeof (window as unknown as { AudioDecoder?: unknown }).AudioDecoder !== 'undefined';
+      const encoding = opusSupported ? 'opus' : 'pcm16';
+      const sampleRate = opusSupported ? 24000 : 16000;
+
+      // 2. Get wsUrl from our backend (credentials stay server-side)
       const initRes = await fetch('/api/voice-init', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username: 'website-demo' }),
+        body: JSON.stringify({ username: 'website-demo', encoding, sampleRate }),
       });
 
       if (!initRes.ok) {
@@ -90,15 +104,15 @@ export default function TalkToMrCallBlock() {
         throw new Error('No WebSocket URL returned');
       }
 
-      // 2. Check SDK is loaded
+      // 3. Check SDK is loaded
       if (!window.MrCallDirectVoice) {
         throw new Error('Voice SDK not loaded');
       }
 
-      // 3. Instantiate SDK and start streaming
+      // 4. Instantiate SDK with the same encoding negotiated with the server
       const dv = new window.MrCallDirectVoice({
         baseUrl: 'https://api.mrcall.ai',
-        encoding: 'opus',
+        encoding,
         onCallStarted: () => {
           setCallStatus('active');
         },
