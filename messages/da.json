@@ -49,8 +49,8 @@
     "titleAccent": "konfigurér ikke.",
     "description": "Fortæl MrCall, hvad du har brug for, med almindeligt sprog. Systemet sammensætter en tilpasset persona med langtidshukommelse og selvstændig handlekraft — ingen formularer, ingen indstillingssider.",
     "quote": "\"Jeg beskrev, hvad jeg havde brug for, i én sætning. Tredive sekunder senere besvarede min agent opkald præcis, som jeg ønskede.\"",
-    "poweredBy": "Drevet af",
-    "zylchEngine": "Zylch Engine"
+    "poweredBy": "",
+    "zylchEngine": ""
   },
   "chatDemo": {
     "configurator": "MrCall Konfigurator",
@@ -146,10 +146,10 @@
     "liveSecurityDesc": "Virksomhedsniveau isolation for hver kunde og arbejdsområde.",
     "soonEmailTitle": "E-mail-triage og udkast",
     "soonEmailDesc": "Din agent læser, prioriterer og udarbejder svar til din indbakke.",
-    "soonCrmTitle": "Dyb CRM-synkronisering",
-    "soonCrmDesc": "Tovejs-synkronisering med dit CRM — kontakter, handler og historik.",
+    "liveCrmTitle": "Dyb CRM-synkronisering",
+    "liveCrmDesc": "Tovejs-synkronisering med dit CRM — kontakter, handler og historik.",
     "soonTaskTitle": "Autonom opgaveudførelse",
-    "soonTaskDesc": "Drevet af Zylch Engine — din agent handler selvstændigt.",
+    "soonTaskDesc": "Din agent handler selvstændigt.",
     "soonMemoryTitle": "Proaktiv hukommelse på tværs af kanaler",
     "soonMemoryDesc": "Én hjerne på tværs af opkald, e-mails og beskeder. Fuld kontekst, altid."
   },

@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
-import { URLS, CONTACT, SITE } from '@/lib/constants';
+import { URLS, SITE } from '@/lib/constants';
 import { buildDashboardUrl } from '@/lib/tracking';
 
 export default function Footer() {
@@ -122,18 +122,9 @@ export default function Footer() {
         </div>
 
         {/* Bottom bar */}
-        <div className="mt-16 pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="mt-16 pt-8 border-t border-white/10 flex items-center justify-center">
           <p className="text-white/40 text-xs">
             &copy; {new Date().getFullYear()} {SITE.name}. {t('allRightsReserved')}
-          </p>
-          <p className="text-white/40 text-xs">
-            <a href={`tel:${CONTACT.phoneRaw}`} className="hover:text-white/60 transition-colors">
-              {CONTACT.phone}
-            </a>
-            {' '}&middot;{' '}
-            <a href={`mailto:${CONTACT.support}`} className="hover:text-white/60 transition-colors">
-              {CONTACT.support}
-            </a>
           </p>
         </div>
       </div>

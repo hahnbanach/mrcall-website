@@ -49,8 +49,8 @@
     "titleAccent": "no configure.",
     "description": "Dígale a MrCall lo que necesita en lenguaje natural. El sistema crea un agente personalizado con memoria a largo plazo y autonomía propia, sin formularios ni páginas de configuración.",
     "quote": "\"Describí lo que necesitaba en una frase. Treinta segundos después, mi agente atendía las llamadas exactamente como yo quería.\"",
-    "poweredBy": "Impulsado por",
-    "zylchEngine": "Zylch Engine"
+    "poweredBy": "",
+    "zylchEngine": ""
   },
   "chatDemo": {
     "configurator": "Configurador de MrCall",
@@ -146,10 +146,10 @@
     "liveSecurityDesc": "Aislamiento de nivel empresarial para cada cliente y espacio de trabajo.",
     "soonEmailTitle": "Clasificación y redacción de correos",
     "soonEmailDesc": "Su agente lee, prioriza y redacta respuestas para su bandeja de entrada.",
-    "soonCrmTitle": "Sincronización profunda con CRM",
-    "soonCrmDesc": "Sincronización bidireccional con su CRM: contactos, operaciones e historial.",
+    "liveCrmTitle": "Sincronización profunda con CRM",
+    "liveCrmDesc": "Sincronización bidireccional con su CRM: contactos, operaciones e historial.",
     "soonTaskTitle": "Ejecución autónoma de tareas",
-    "soonTaskDesc": "Impulsado por el motor Zylch Engine: su agente actúa de forma independiente.",
+    "soonTaskDesc": "Su agente actúa de forma independiente.",
     "soonMemoryTitle": "Memoria proactiva multicanal",
     "soonMemoryDesc": "Un cerebro para llamadas, correos y mensajes. Contexto total, siempre."
   },

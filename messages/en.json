@@ -49,8 +49,8 @@
     "titleAccent": "don't configure.",
     "description": "Tell MrCall what you need in plain language. The system assembles a custom persona with long-term memory and autonomous agency — no forms, no settings pages.",
     "quote": "\"I described what I needed in one sentence. Thirty seconds later, my agent was answering calls exactly the way I wanted.\"",
-    "poweredBy": "Powered by",
-    "zylchEngine": "Zylch Engine"
+    "poweredBy": "",
+    "zylchEngine": ""
   },
   "chatDemo": {
     "configurator": "MrCall Configurator",
@@ -146,10 +146,10 @@
     "liveSecurityDesc": "Enterprise-grade isolation for every client and workspace.",
     "soonEmailTitle": "Email triage & drafting",
     "soonEmailDesc": "Your agent reads, prioritizes, and drafts responses to your inbox.",
-    "soonCrmTitle": "Deep CRM synchronization",
-    "soonCrmDesc": "Bidirectional sync with your CRM — contacts, deals, and history.",
+    "liveCrmTitle": "Deep CRM synchronization",
+    "liveCrmDesc": "Bidirectional sync with your CRM — contacts, deals, and history.",
     "soonTaskTitle": "Autonomous task execution",
-    "soonTaskDesc": "Powered by the Zylch engine — your agent acts independently.",
+    "soonTaskDesc": "Your agent acts independently.",
     "soonMemoryTitle": "Cross-channel proactive memory",
     "soonMemoryDesc": "One brain across calls, emails, messages. Total context, always."
   },

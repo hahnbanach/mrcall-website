@@ -19,7 +19,7 @@ export const CONTACT = {
 } as const;
 
 export const SITE = {
-  name: 'MrCall',
+  name: 'Hahn Banach',
   domain: 'mrcall.ai',
 } as const;
 

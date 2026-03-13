@@ -39,8 +39,6 @@ export default function AgentFactoryBlock() {
             </div>
 
             <div className="mt-8 inline-flex items-center gap-2 bg-brand-light-grey rounded-full px-4 py-2">
-              <span className="text-xs text-brand-black/50">{t('poweredBy')}</span>
-              <span className="text-xs font-bold text-brand-black">{t('zylchEngine')}</span>
               <span className="text-[10px] font-bold uppercase tracking-wider bg-brand-blue/10 text-brand-blue px-2 py-0.5 rounded-full">
                 {tc('comingSoon')}
               </span>
