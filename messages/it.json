@@ -15,10 +15,10 @@
   },
   "hero": {
     "titleStart": "Il tuo intero ufficio,",
-    "titleAccent": "un solo agente",
-    "titleEnd": "di distanza.",
+    "titleAccent": "un solo assistente.",
+    "titleEnd": "",
     "description": "La prima infrastruttura agentica che risponde alle tue chiamate, gestisce la tua posta e organizza il tuo CRM. Una forza lavoro digitale che parla, ricorda e agisce.",
-    "smeTagline": "Dal libero professionista ai team aziendali — il tuo agente telefonico AI è pronto in pochi minuti.",
+    "smeTagline": "Dal libero professionista ai team aziendali — il tuo assistente telefonico AI è pronto in pochi minuti.",
     "seeHowItWorks": "Scopri come funziona"
   },
   "useCaseBadges": {
@@ -30,10 +30,10 @@
     "propertyManagers": "Gestori immobiliari"
   },
   "mobile": {
-    "label": "L'Agente Tascabile",
+    "label": "L'Assistente Tascabile",
     "titleStart": "Il tuo ufficio non è un luogo.",
     "titleAccent": "È un'app.",
-    "description": "Porta la tua business intelligence ovunque. A differenza dei concorrenti limitati al testo, MrCall offre app native iOS e Android. Parla direttamente con il tuo agente — ovunque, in qualsiasi momento.",
+    "description": "Il tuo ufficio sempre con te. MrCall offre app native iOS e Android — parla direttamente con il tuo assistente, ovunque e in qualsiasi momento.",
     "featureNativeApps": "App native iOS & Android",
     "featureVoiceFirst": "Interazione vocale — basta parlare",
     "featureCallHistory": "Storico completo delle chiamate e trascrizioni",
@@ -44,25 +44,25 @@
     "googlePlay": "Google Play"
   },
   "agentFactory": {
-    "label": "La Fabbrica degli Agenti",
-    "titleStart": "Distribuisci,",
+    "label": "Architettura Agentica",
+    "titleStart": "Descrivi,",
     "titleAccent": "non configurare.",
-    "description": "Dì a MrCall ciò di cui hai bisogno in linguaggio naturale. Il sistema assembla un agente personalizzato con memoria a lungo termine e autonomia operativa — nessun modulo, nessuna pagina di impostazioni.",
-    "quote": "\"Ho descritto ciò di cui avevo bisogno in una sola frase. Trenta secondi dopo, il mio agente rispondeva alle chiamate esattamente come volevo.\"",
-    "poweredBy": "Powered by",
-    "zylchEngine": "Zylch Engine"
+    "description": "Dì a MrCall ciò di cui hai bisogno in linguaggio naturale. Il sistema assembla un assistente personalizzato con memoria a lungo termine e autonomia operativa — nessun modulo, nessuna pagina di impostazioni.",
+    "quote": "\"Ho descritto ciò di cui avevo bisogno in una sola frase. Trenta secondi dopo, il mio assistente rispondeva alle chiamate esattamente come volevo.\"",
+    "poweredBy": "",
+    "zylchEngine": ""
   },
   "chatDemo": {
     "configurator": "Configuratore MrCall",
-    "subtitle": "Descrivi il tuo agente ideale",
-    "greeting": "Dimmi di cosa hai bisogno. Creerò il tuo agente in pochi secondi.",
-    "userMessage": "Ho bisogno di un agente che gestisca i contatti immobiliari, ricordi le preferenze dei clienti e pianifichi le visite nel mio Outlook.",
-    "placeholder": "Descrivi il tuo agente...",
+    "subtitle": "Descrivi il tuo assistente ideale",
+    "greeting": "Dimmi di cosa hai bisogno. Creerò il tuo assistente in pochi secondi.",
+    "userMessage": "Ho bisogno di un assistente che gestisca i contatti immobiliari, ricordi le preferenze dei clienti e pianifichi le visite nel mio Outlook.",
+    "placeholder": "Descrivi il tuo assistente...",
     "stepAnalyzing": "Analisi dei requisiti...",
     "stepKnowledgeBase": "Caricamento della knowledge base immobiliare",
     "stepMemory": "Attivazione della memoria preferenze cliente",
     "stepCalendar": "Connessione all'integrazione calendario Outlook",
-    "stepReady": "L'agente \"Arianna — Immobiliare\" è pronto!"
+    "stepReady": "L'assistente \"Arianna — Immobiliare\" è pronto!"
   },
   "relationship": {
     "label": "Intelligenza Relazionale",
@@ -98,7 +98,7 @@
     "label": "Il Ponte Universale",
     "titleStart": "Il tuo assistente telefonico si è appena",
     "titleAccent": "evoluto.",
-    "description": "Voce, testo e azione in un unico flusso. Un agente che legge il tuo CRM per capire chi sta chiamando, poi invia un follow-up su WhatsApp mentre dormi.",
+    "description": "Voce, testo e azione in un unico flusso. Un assistente che legge il tuo CRM per capire chi sta chiamando, poi invia un follow-up su WhatsApp mentre dormi.",
     "stepVoice": "Voce",
     "stepVoiceDesc": "Chiamata in arrivo ricevuta e gestita",
     "stepCrm": "CRM",
@@ -112,7 +112,7 @@
     "label": "Demo dal vivo",
     "titleStart": "Ascoltalo con le",
     "titleAccent": "tue orecchie.",
-    "description": "Parla con il nostro agente AI adesso. Nessuna registrazione necessaria. Scopri come MrCall gestisce una vera conversazione — in modo naturale e professionale.",
+    "description": "Parla con il nostro assistente AI adesso. Nessuna registrazione necessaria. Scopri come MrCall gestisce una vera conversazione — in modo naturale e professionale.",
     "talkButton": "Parla con MrCall",
     "beforeYouStart": "Prima di iniziare",
     "consentText": "Cliccando su \"Avvia conversazione\" accetti che il tuo indirizzo IP venga tracciato e associato a una registrazione della conversazione e all'estrazione di dati biometrici per il riconoscimento vocale. Qualsiasi uso illecito, abusivo o irrispettoso di questa demo sarà perseguito legalmente. Ti preghiamo di utilizzarla in modo responsabile.",
@@ -134,22 +134,22 @@
     "titleAccent": "Pronto per domani.",
     "liveNow": "Disponibile ora",
     "comingSoon": "In arrivo",
-    "liveVoiceTitle": "Ricezione vocale ad alta fedeltà",
-    "liveVoiceDesc": "Conversazioni AI cristalline, naturali e professionali.",
+    "liveVoiceTitle": "Ricezione vocale intelligente",
+    "liveVoiceDesc": "Conversazioni naturali e professionali, come parlare con una persona.",
     "liveAppsTitle": "App native iOS & Android",
-    "liveAppsDesc": "Direct Talk — il tuo agente in tasca, sempre accessibile.",
+    "liveAppsDesc": "Direct Talk — il tuo assistente in tasca, sempre accessibile.",
     "liveTranscriptionTitle": "Trascrizione automatica",
     "liveTranscriptionDesc": "Ogni chiamata trascritta, ricercabile e organizzata automaticamente.",
     "liveCalendarTitle": "Prenotazione calendario",
     "liveCalendarDesc": "Integrazione fluida con Outlook e Google Calendar.",
     "liveSecurityTitle": "Sicurezza multi-tenant",
     "liveSecurityDesc": "Isolamento di livello enterprise per ogni cliente e workspace.",
+    "liveCrmTitle": "Sincronizzazione CRM avanzata",
+    "liveCrmDesc": "Sincronizzazione bidirezionale con il tuo CRM — contatti, trattative e storico.",
     "soonEmailTitle": "Triage e composizione email",
-    "soonEmailDesc": "Il tuo agente legge, prioritizza e compone risposte per la tua casella di posta.",
-    "soonCrmTitle": "Sincronizzazione CRM avanzata",
-    "soonCrmDesc": "Sincronizzazione bidirezionale con il tuo CRM — contatti, trattative e storico.",
+    "soonEmailDesc": "Il tuo assistente legge, prioritizza e compone risposte per la tua casella di posta.",
     "soonTaskTitle": "Esecuzione autonoma dei task",
-    "soonTaskDesc": "Alimentato dal motore Zylch — il tuo agente agisce in autonomia.",
+    "soonTaskDesc": "Il tuo assistente agisce in autonomia.",
     "soonMemoryTitle": "Memoria proattiva cross-canale",
     "soonMemoryDesc": "Un unico cervello per chiamate, email e messaggi. Contesto totale, sempre."
   },
@@ -202,7 +202,7 @@
   },
   "transcript": {
     "liveCall": "Chiamata in corso — Studio Rossi",
-    "agent": "Agente MrCall",
+    "agent": "Assistente MrCall",
     "caller": "Chiamante",
     "appointmentBooked": "Appuntamento prenotato",
     "line1": "Buongiorno, grazie per aver chiamato lo Studio Rossi. Come posso aiutarla?",
@@ -233,7 +233,7 @@
     "titleAccent": "ogni attività.",
     "description": "Dal libero professionista alle imprese con più sedi, MrCall si adatta al tuo settore, al tuo flusso di lavoro e ai tuoi clienti.",
     "readyToTry": "Pronto a provare MrCall?",
-    "readyDesc": "Configura il tuo agente telefonico AI in pochi minuti. Nessun hardware, nessuna competenza tecnica richiesta.",
+    "readyDesc": "Configura il tuo assistente telefonico AI in pochi minuti. Nessun hardware, nessuna competenza tecnica richiesta.",
     "freelancers": {
       "name": "Liberi professionisti",
       "tagline": "Non perdere mai più la chiamata di un cliente.",
@@ -243,7 +243,7 @@
       "feature2Title": "Pianificazione appuntamenti",
       "feature2Desc": "Permetti ai chiamanti di prenotare gli slot disponibili direttamente tramite l'integrazione con il tuo calendario.",
       "feature3Title": "Gestione delle FAQ",
-      "feature3Desc": "Il tuo agente risponde alle domande più frequenti su servizi, prezzi e disponibilità.",
+      "feature3Desc": "Il tuo assistente risponde alle domande più frequenti su servizi, prezzi e disponibilità.",
       "feature4Title": "Notifiche istantanee",
       "feature4Desc": "Ricevi trascrizioni e riepiloghi in tempo reale per non perdere mai il contesto.",
       "feature5Title": "Immagine professionale",
@@ -271,7 +271,7 @@
       "feature1Title": "Acquisizione contatti 24/7",
       "feature1Desc": "Ogni chiamata riceve risposta immediata, acquisendo l'interesse dell'acquirente o venditore e i dati di contatto.",
       "feature2Title": "Informazioni sugli immobili",
-      "feature2Desc": "Il tuo agente fornisce dettagli su annunci, prezzi e disponibilità dalla tua knowledge base.",
+      "feature2Desc": "Il tuo assistente fornisce dettagli su annunci, prezzi e disponibilità dalla tua knowledge base.",
       "feature3Title": "Pianificazione visite",
       "feature3Desc": "I chiamanti possono prenotare visite agli immobili direttamente tramite il tuo calendario sincronizzato.",
       "feature4Title": "Qualificazione dei contatti",
@@ -322,7 +322,7 @@
       "feature4Title": "Notifiche ai proprietari",
       "feature4Desc": "Tieni informati i proprietari con riepiloghi automatici delle interazioni con gli inquilini.",
       "feature5Title": "Supporto multi-proprietà",
-      "feature5Desc": "Un solo agente gestisce le chiamate per l'intero portafoglio con conoscenze specifiche per ogni proprietà."
+      "feature5Desc": "Un solo assistente gestisce le chiamate per l'intero portafoglio con conoscenze specifiche per ogni proprietà."
     }
   },
   "footer": {
@@ -344,7 +344,7 @@
     "noPosts": "Nessun articolo ancora. Torna a trovarci presto!"
   },
   "metadata": {
-    "homeTitle": "MrCall — Il tuo intero ufficio, un solo agente di distanza.",
+    "homeTitle": "MrCall — Il tuo intero ufficio, un solo assistente.",
     "homeDescription": "La prima infrastruttura agentica che risponde alle tue chiamate, gestisce la tua posta e organizza il tuo CRM. Una forza lavoro digitale che parla, ricorda e agisce.",
     "contactsTitle": "Contattaci — MrCall",
     "contactsDescription": "Mettiti in contatto con il team MrCall per supporto, partnership o domande.",

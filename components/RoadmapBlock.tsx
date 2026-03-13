@@ -15,11 +15,11 @@ export default function RoadmapBlock() {
     { title: t('liveTranscriptionTitle'), description: t('liveTranscriptionDesc') },
     { title: t('liveCalendarTitle'), description: t('liveCalendarDesc') },
     { title: t('liveSecurityTitle'), description: t('liveSecurityDesc') },
+    { title: t('liveCrmTitle'), description: t('liveCrmDesc') },
   ];
 
   const featuresSoon = [
     { title: t('soonEmailTitle'), description: t('soonEmailDesc') },
-    { title: t('soonCrmTitle'), description: t('soonCrmDesc') },
     { title: t('soonTaskTitle'), description: t('soonTaskDesc') },
     { title: t('soonMemoryTitle'), description: t('soonMemoryDesc') },
   ];
