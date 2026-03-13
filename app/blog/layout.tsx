@@ -3,6 +3,7 @@ import { Montserrat, Noto_Serif_Display } from 'next/font/google';
 import { NextIntlClientProvider } from 'next-intl';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import CookieConsent from '@/components/CookieConsent';
 import { GoogleTagManagerHead, GoogleTagManagerNoScript } from '@/components/GoogleTagManager';
 import TrackingProvider from '@/components/TrackingProvider';
 import messages from '@/messages/en.json';
@@ -47,6 +48,7 @@ export default function BlogLayout({
             <Header />
             <main>{children}</main>
             <Footer />
+            <CookieConsent />
           </TrackingProvider>
         </NextIntlClientProvider>
       </body>

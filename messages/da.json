@@ -334,7 +334,24 @@
     "privacyPolicy": "Privatlivspolitik",
     "termsOfService": "Servicevilkår",
     "cookiePolicy": "Cookiepolitik",
-    "allRightsReserved": "Alle rettigheder forbeholdes."
+    "allRightsReserved": "Alle rettigheder forbeholdes.",
+    "manageCookies": "Administrer cookies"
+  },
+  "cookieConsent": {
+    "title": "Vi værner om dit privatliv",
+    "description": "Vi bruger cookies til at forbedre din browsingoplevelse og analysere vores trafik. Du kan vælge, hvilke cookies du vil acceptere.",
+    "acceptAll": "Accepter alle",
+    "rejectAll": "Afvis alle",
+    "customize": "Tilpas",
+    "savePreferences": "Gem præferencer",
+    "cookiePolicy": "Cookiepolitik",
+    "essential": "Essentielle",
+    "essentialDesc": "Nødvendige for at hjemmesiden fungerer. Kan ikke deaktiveres.",
+    "analytics": "Analyse",
+    "analyticsDesc": "Hjælper os med at forstå, hvordan besøgende interagerer med vores hjemmeside.",
+    "marketing": "Marketing",
+    "marketingDesc": "Bruges til målrettet annoncering og sporing på tværs af sider.",
+    "alwaysOn": "Altid aktiv"
   },
   "blog": {
     "title": "Blog",

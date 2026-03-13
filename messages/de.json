@@ -334,7 +334,24 @@
     "privacyPolicy": "Datenschutzrichtlinie",
     "termsOfService": "Nutzungsbedingungen",
     "cookiePolicy": "Cookie-Richtlinie",
-    "allRightsReserved": "Alle Rechte vorbehalten."
+    "allRightsReserved": "Alle Rechte vorbehalten.",
+    "manageCookies": "Cookies verwalten"
+  },
+  "cookieConsent": {
+    "title": "Ihre Privatsphäre ist uns wichtig",
+    "description": "Wir verwenden Cookies, um Ihr Surferlebnis zu verbessern und unseren Datenverkehr zu analysieren. Sie können wählen, welche Cookies Sie akzeptieren.",
+    "acceptAll": "Alle akzeptieren",
+    "rejectAll": "Alle ablehnen",
+    "customize": "Anpassen",
+    "savePreferences": "Einstellungen speichern",
+    "cookiePolicy": "Cookie-Richtlinie",
+    "essential": "Essenziell",
+    "essentialDesc": "Für die Funktion der Website erforderlich. Kann nicht deaktiviert werden.",
+    "analytics": "Analyse",
+    "analyticsDesc": "Helfen uns zu verstehen, wie Besucher mit unserer Website interagieren.",
+    "marketing": "Marketing",
+    "marketingDesc": "Für gezielte Werbung und seitenübergreifendes Tracking.",
+    "alwaysOn": "Immer aktiv"
   },
   "blog": {
     "title": "Blog",
