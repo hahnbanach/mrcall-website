@@ -5,6 +5,7 @@ import { NextIntlClientProvider } from 'next-intl';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import CookieConsent from '@/components/CookieConsent';
 import { GoogleTagManagerHead, GoogleTagManagerNoScript } from '@/components/GoogleTagManager';
 import TrackingProvider from '@/components/TrackingProvider';
 import { SITE } from '@/lib/constants';
@@ -101,6 +102,7 @@ export default async function RootLayout({
             <Header />
             <main>{children}</main>
             <Footer />
+            <CookieConsent />
           </TrackingProvider>
         </NextIntlClientProvider>
       </body>

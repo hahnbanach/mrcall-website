@@ -117,6 +117,14 @@ export default function Footer() {
                   llms.txt
                 </a>
               </li>
+              <li>
+                <button
+                  onClick={() => window.dispatchEvent(new Event('open-cookie-consent'))}
+                  className="text-white/70 hover:text-white transition-colors text-sm cursor-pointer"
+                >
+                  {t('manageCookies')}
+                </button>
+              </li>
             </ul>
           </div>
         </div>
