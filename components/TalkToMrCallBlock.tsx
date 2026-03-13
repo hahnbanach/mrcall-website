@@ -148,10 +148,35 @@ export default function TalkToMrCallBlock() {
   const handleStartConversation = async () => {
     setState('checking');
 
-    // TODO: re-enable demo limit check when tracking API is ready
-    trackDemo('consent', locale);
-    setState('active');
-    startVoiceCall();
+    try {
+      const demoCheck = await checkDemoLimit();
+
+      if (!demoCheck.allowed) {
+        track('custom', {
+          locale,
+          metadata: {
+            action: 'demo_limit_reached',
+            source: 'server',
+            used: demoCheck.used,
+            limit: demoCheck.limit,
+          },
+        });
+        setState('limited');
+        return;
+      }
+
+      // Update cookie for fast client-side pre-check
+      setDemoCookie(demoCheck.used + 1);
+
+      trackDemo('consent', locale);
+      setState('active');
+      startVoiceCall();
+    } catch {
+      // Fail-open: if demo check fails, allow the demo
+      trackDemo('consent', locale);
+      setState('active');
+      startVoiceCall();
+    }
   };
 
   const handleEndDemo = () => {

@@ -1,7 +1,9 @@
 /**
  * Client-side website event tracking.
  *
- * Sends events to the Starchat backend at /mrcall/v1/tracking/events.
+ * Events are sent to local Next.js API routes (/api/track, /api/demo-check)
+ * which proxy them to Starchat (api.mrcall.ai) with the API key server-side.
+ *
  * Designed to be lightweight, non-blocking, and privacy-respectful:
  * - No cookies — uses localStorage for anonymous session ID
  * - No fingerprinting — only collects screen width + user agent
@@ -13,30 +15,6 @@ import { getDashboardUid } from './auth';
 
 const SESSION_KEY = 'mrcall_sid';
 const UTM_KEY = 'mrcall_utm';
-
-// ─── Starchat Endpoint URLs (runtime detection) ─────────────
-
-function getTrackingUrl(): string {
-  if (typeof window === 'undefined') return '';
-  const host = window.location.hostname;
-  if (host === 'mrcall.ai' || host === 'www.mrcall.ai' || host === 'dev.mrcall.ai')
-    return 'https://api.mrcall.ai/mrcall/v1/tracking/events';
-  return ''; // local dev: log only
-}
-
-function getDemoCheckUrl(): string {
-  if (typeof window === 'undefined') return '';
-  const host = window.location.hostname;
-  if (host === 'mrcall.ai' || host === 'www.mrcall.ai' || host === 'dev.mrcall.ai')
-    return 'https://api.mrcall.ai/mrcall/v1/tracking/demo-check';
-  return '';
-}
-
-function getTrackingApiKey(): string {
-  // In production, this should be set as NEXT_PUBLIC_TRACKING_API_KEY
-  // It's a write-only key for the tracking table — safe to expose client-side
-  return process.env.NEXT_PUBLIC_TRACKING_API_KEY || '';
-}
 
 // ─── Session ID ──────────────────────────────────────────────
 
@@ -162,14 +140,11 @@ export interface TrackOptions {
 export function track(eventType: TrackEventType, options: TrackOptions = {}) {
   if (typeof window === 'undefined') return;
 
-  // Don't track in development
+  // Don't track in development — just log to console
   if (process.env.NODE_ENV === 'development') {
     console.debug('[tracking]', eventType, options);
     return;
   }
-
-  const trackingUrl = getTrackingUrl();
-  if (!trackingUrl) return; // No endpoint configured for this hostname
 
   const utm = captureUtmParams();
   const queryParams = captureQueryParams();
@@ -191,18 +166,11 @@ export function track(eventType: TrackEventType, options: TrackOptions = {}) {
     },
   };
 
-  const body = JSON.stringify(payload);
-  const apiKey = getTrackingApiKey();
-
-  // Use fetch with keepalive (same reliability as sendBeacon for page unload)
-  // sendBeacon doesn't support custom headers — we need X-Tracking-Key
-  fetch(trackingUrl, {
+  // Send to local Next.js API route (which proxies to Starchat with API key server-side)
+  fetch('/api/track', {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      ...(apiKey && { 'X-Tracking-Key': apiKey }),
-    },
-    body,
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
     keepalive: true,
   }).catch(() => {
     // Silently fail — tracking should never break UX
@@ -219,27 +187,26 @@ export interface DemoCheckResponse {
 }
 
 export async function checkDemoLimit(): Promise<DemoCheckResponse> {
-  const demoCheckUrl = getDemoCheckUrl();
-  const apiKey = getTrackingApiKey();
-
-  if (!demoCheckUrl) {
-    // Local dev or unknown hostname — allow
+  // In dev, always allow
+  if (process.env.NODE_ENV === 'development') {
     return { allowed: true, remaining: 3, limit: 3, used: 0 };
   }
 
-  const res = await fetch(demoCheckUrl, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      ...(apiKey && { 'X-Tracking-Key': apiKey }),
-    },
-    body: JSON.stringify({
-      sessionId: getSessionId(),
-      uid: getDashboardUid() || undefined,
-    }),
-  });
+  try {
+    const res = await fetch('/api/demo-check', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        sessionId: getSessionId(),
+        uid: getDashboardUid() || undefined,
+      }),
+    });
 
-  return res.json();
+    return res.json();
+  } catch {
+    // Fail-open: if request fails, allow the demo
+    return { allowed: true, remaining: 1, limit: 3, used: 0 };
+  }
 }
 
 // ─── Dashboard URL Builder (Attribution Bridging) ────────────

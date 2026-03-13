@@ -9,16 +9,16 @@ No Google Analytics. No third-party analytics cookies. GTM (`GTM-MW4TX4N`) is ke
 ## Architecture
 
 ```
-┌─────────────┐   fetch (keepalive)    ┌──────────────────────┐     doobie     ┌──────────────────────┐
-│   Browser    │  ──────────────────►   │  Starchat            │  ──────────►   │  Scaleway PostgreSQL │
-│  (tracking.  │   POST JSON            │  /mrcall/v1/tracking │   INSERT       │  + TimescaleDB       │
-│   ts)        │   + API key header     │  /events             │                │  tracking_events     │
-└─────────────┘                         │  rate-limited        │                │  (hypertable)        │
-                                        │  validated           │                └──────────────────────┘
-                                        └──────────────────────┘
+┌─────────────┐   fetch (keepalive)    ┌──────────────────────┐   fetch + API key   ┌──────────────────────┐     doobie     ┌──────────────────────┐
+│   Browser    │  ──────────────────►   │  Next.js API Routes  │  ────────────────►   │  Starchat            │  ──────────►   │  Scaleway PostgreSQL │
+│  (tracking.  │   POST /api/track     │  /api/track           │   X-Tracking-Key    │  /mrcall/v1/tracking │   INSERT       │  + TimescaleDB       │
+│   ts)        │   POST /api/demo-check│  /api/demo-check      │   + X-Forwarded-For │  /events             │                │  tracking_events     │
+└─────────────┘                         └──────────────────────┘                      │  rate-limited        │                │  (hypertable)        │
+                                                                                      │  validated           │                └──────────────────────┘
+                                                                                      └──────────────────────┘
 ```
 
-The website has **no direct database connection**. All tracking goes through Starchat's public endpoint.
+The browser sends tracking events to **local Next.js API routes** (`/api/track`, `/api/demo-check`), which proxy them to Starchat (`api.mrcall.ai`) with the API key added server-side. The API key (`TRACKING_API_KEY`) is never exposed to the browser. The website has **no direct database connection**.
 
 ## Components
 
@@ -34,20 +34,18 @@ Lightweight browser-side utility:
 - **Silent failures** — tracking errors never break the user experience
 - **Dev mode** — logs to console instead of hitting the API
 
-#### Endpoint Detection
+#### Backend Proxy
 
-The tracking URL is detected at runtime based on hostname:
-- `mrcall.ai` / `www.mrcall.ai` / `dev.mrcall.ai` → `https://api.mrcall.ai/mrcall/v1/tracking/events`
-- Local development → console logging only (no API calls)
+All tracking calls go through Next.js API routes — the browser never calls Starchat directly:
+- `track()` → `POST /api/track` → Starchat `/mrcall/v1/tracking/events`
+- `checkDemoLimit()` → `POST /api/demo-check` → Starchat `/mrcall/v1/tracking/demo-check`
+- In development (`NODE_ENV=development`) → console logging only (no API calls)
 
 #### Authentication
 
-Events are sent with an API key in the `Authorization` header:
-```
-Authorization: Bearer <NEXT_PUBLIC_TRACKING_API_KEY>
-```
+The API key is stored as a **server-only** environment variable (`TRACKING_API_KEY`, no `NEXT_PUBLIC_` prefix). The Next.js API routes add the `X-Tracking-Key` header when proxying to Starchat. The browser never sees the key.
 
-This is a **write-only** public key (like Segment/Mixpanel analytics keys). It's exposed client-side by design — it only allows writing non-sensitive tracking events. The key is set via the `NEXT_PUBLIC_TRACKING_API_KEY` environment variable.
+The API routes also forward the client IP via `X-Forwarded-For` so Starchat can apply per-IP rate limiting.
 
 #### Functions
 
@@ -86,13 +84,12 @@ Server-side gate for the "Talk to MrCall" voice demo, implemented in Starchat at
 | Logged-in (has `mrcall_uid` cookie) | **10 demos/day** | `metadata.uid` |
 
 **Flow:**
-1. User clicks "Talk to MrCall" → client-side cookie pre-check (`mrcall_demo` cookie stores today's count)
-2. If pre-check passes → consent screen appears
-3. User clicks "Start conversation" → `POST /mrcall/v1/tracking/demo-check` with `{ sessionId, uid? }`
-4. Starchat queries `tracking_events` for `demo_consent` count in last 24h
-5. Returns `{ allowed, remaining, limit, used }`
-6. If allowed → consent cookie updated, `demo_consent` event tracked, demo starts
-7. If denied → `demo_limit_reached` event tracked, "limit reached" screen shown
+1. User clicks "Talk to MrCall" → consent screen appears
+2. User clicks "Start conversation" → `POST /api/demo-check` → proxied to Starchat `/mrcall/v1/tracking/demo-check`
+3. Starchat queries `tracking_events` for `demo_consent` count in the rolling window (default 48h)
+4. Returns `{ allowed, remaining, limit, used }`
+5. If allowed → `mrcall_demo` cookie updated, `demo_consent` event tracked, voice call starts
+6. If denied → `demo_limit_reached` event tracked, "limit reached" screen shown
 
 **Cookie:** `mrcall_demo` — stores daily demo count. `Path=/; SameSite=Lax; Secure; Max-Age=86400`. Used for fast client-side pre-check only; Starchat is the real gate.
 
@@ -125,10 +122,10 @@ Included in both:
 ## Environment Variables
 
 ```env
-NEXT_PUBLIC_TRACKING_API_KEY=<write-only API key for Starchat tracking endpoint>
+TRACKING_API_KEY=<API key for Starchat tracking endpoint>
 ```
 
-This is the only tracking-related env var. The website has no database credentials — Starchat handles all DB writes.
+This is the only tracking-related env var. It is **server-only** (no `NEXT_PUBLIC_` prefix) — used by `/api/track` and `/api/demo-check` API routes to authenticate with Starchat. The website has no database credentials — Starchat handles all DB writes.
 
 ## Development
 

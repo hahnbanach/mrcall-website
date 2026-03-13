@@ -26,7 +26,7 @@ The build generates:
 
 | Variable | Description | Notes |
 |----------|-------------|-------|
-| `NEXT_PUBLIC_TRACKING_API_KEY` | Write-only API key for Starchat tracking endpoint | Public by design (exposed client-side, like Segment/Mixpanel keys). Only allows writing non-sensitive tracking events. |
+| `TRACKING_API_KEY` | API key for Starchat tracking endpoint | Server-only. Proxied via `/api/track` and `/api/demo-check`. Never exposed to browser. |
 | `MRCALL_VOICE_BASE_URL` | StarChat API base URL for voice init | Server-only. e.g. `https://api.mrcall.ai` |
 | `MRCALL_VOICE_BUSINESS_ID` | Business ID for the website's voice demo agent | Server-only. |
 | `MRCALL_VOICE_AUTH_USER` | API username for voice init Basic Auth | Server-only. Never exposed to browser. |

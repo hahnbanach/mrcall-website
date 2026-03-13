@@ -109,7 +109,7 @@ When `locale === 'ar'`:
 
 ### 5. Tracking via Starchat Backend
 
-Instead of Google Analytics, events are tracked via the **Starchat** backend API (`/mrcall/v1/tracking/events`), which writes to the shared Scaleway PostgreSQL/TimescaleDB database. The website has no direct database connection — all tracking goes through Starchat's public endpoint with API key authentication. This enables:
+Instead of Google Analytics, events are tracked via the **Starchat** backend API (`/mrcall/v1/tracking/events`), which writes to the shared Scaleway PostgreSQL/TimescaleDB database. The website has no direct database connection — all tracking goes through Next.js API routes that proxy to Starchat. This enables:
 - Cross-product attribution (website visitor → dashboard signup → paying customer)
 - Full data ownership, no third-party data sharing
 - No analytics cookies needed (GDPR-friendly)
@@ -117,9 +117,10 @@ Instead of Google Analytics, events are tracked via the **Starchat** backend API
 - Logged-in dashboard users identified via cross-domain `mrcall_uid` cookie
 - Demo rate limiting via Starchat's `/mrcall/v1/tracking/demo-check` endpoint
 
-The tracking URL is detected at runtime based on the hostname:
-- `mrcall.ai` / `www.mrcall.ai` / `dev.mrcall.ai` → `https://api.mrcall.ai/mrcall/v1/tracking/events`
-- Local dev → console logging only
+**Backend-proxy pattern (secure):** The API key (`TRACKING_API_KEY`) is stored as a server-only environment variable (no `NEXT_PUBLIC_` prefix). The browser calls `/api/track` and `/api/demo-check`, the Next.js API routes forward to Starchat (`https://api.mrcall.ai`) with the `X-Tracking-Key` header and the client IP via `X-Forwarded-For`. The API key never reaches the client.
+
+- Production → always calls `https://api.mrcall.ai/mrcall/v1/tracking/events`
+- Local dev → console logging only (no API calls)
 
 GTM (`GTM-MW4TX4N`) is kept for future ad pixel support.
 
