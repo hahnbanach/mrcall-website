@@ -3,7 +3,8 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLocale, useTranslations } from 'next-intl';
-import { trackDemo, track, checkDemoLimit, buildDashboardUrl } from '@/lib/tracking';
+import { trackDemo, track, checkDemoLimit } from '@/lib/tracking';
+import DashboardLink from './DashboardLink';
 import { getDashboardUid } from '@/lib/auth';
 import { URLS } from '@/lib/constants';
 
@@ -438,12 +439,12 @@ export default function TalkToMrCallBlock() {
                   </p>
 
                   {!uid && (
-                    <a
-                      href={buildDashboardUrl(URLS.signin)}
+                    <DashboardLink
+                      href={URLS.signin}
                       className="inline-flex items-center justify-center gap-2 h-[44px] rounded-[22px] px-8 bg-brand-blue text-white font-bold text-sm hover:bg-brand-grey-80 transition-colors duration-300 mb-3"
                     >
                       {t('signInForMore')}
-                    </a>
+                    </DashboardLink>
                   )}
 
                   <button

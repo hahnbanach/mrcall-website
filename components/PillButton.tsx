@@ -46,20 +46,27 @@ export default function PillButton({
 }: PillButtonProps) {
   const baseStyles = 'inline-flex items-center justify-center whitespace-nowrap cursor-pointer';
   const classes = `${baseStyles} ${variantStyles[variant]} ${sizeStyles[size]} ${className}`;
+  const isDashboard = isDashboardUrl(href);
 
-  // Auto-append _tsid to dashboard URLs for cross-product attribution
-  const resolvedHref = isDashboardUrl(href) ? buildDashboardUrl(href) : href;
-
-  if (external) {
+  if (external || isDashboard) {
     return (
-      <a href={resolvedHref} target="_blank" rel="noopener noreferrer" className={classes}>
+      <a
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={classes}
+        onClick={isDashboard ? (e) => {
+          e.preventDefault();
+          window.location.href = buildDashboardUrl(href);
+        } : undefined}
+      >
         {children}
       </a>
     );
   }
 
   return (
-    <Link href={resolvedHref} className={classes}>
+    <Link href={href} className={classes}>
       {children}
     </Link>
   );
