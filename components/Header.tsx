@@ -6,7 +6,8 @@ import { useLocale, useTranslations } from 'next-intl';
 import { Link, useRouter, usePathname } from '@/i18n/navigation';
 import PillButton from './PillButton';
 import { URLS, NAV_LINKS } from '@/lib/constants';
-import { trackLanguageSwitch, trackCta, trackOutbound, buildDashboardUrl } from '@/lib/tracking';
+import { trackLanguageSwitch, trackCta, trackOutbound } from '@/lib/tracking';
+import DashboardLink from './DashboardLink';
 import { getDashboardUid } from '@/lib/auth';
 import { routing } from '@/i18n/routing';
 
@@ -124,22 +125,22 @@ export default function Header() {
 
             {uid ? (
               // Logged-in user: show "My Dashboard" link
-              <a
-                href={buildDashboardUrl(URLS.signin)}
+              <DashboardLink
+                href={URLS.signin}
                 className="text-sm font-medium text-brand-blue hover:text-brand-black transition-colors"
               >
                 {t('myDashboard')}
-              </a>
+              </DashboardLink>
             ) : (
               // Not logged in: show "Sign In" + "Try Free"
               <>
-                <a
-                  href={buildDashboardUrl(URLS.signin)}
+                <DashboardLink
+                  href={URLS.signin}
                   onClick={() => trackOutbound(URLS.signin, locale)}
                   className="text-sm text-brand-black/70 hover:text-brand-black transition-colors hidden sm:inline"
                 >
                   {t('signIn')}
-                </a>
+                </DashboardLink>
                 <span onClick={() => trackCta('header_try_free', locale)}>
                   <PillButton href={URLS.signup} size="small" external>
                     {t('tryFree')}
