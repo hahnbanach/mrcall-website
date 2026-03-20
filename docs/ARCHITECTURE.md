@@ -190,7 +190,27 @@ Browser                          Next.js Server              StarChat (api.mrcal
 
 **Backend-init pattern (secure):** API credentials (`MRCALL_VOICE_AUTH_USER`, `MRCALL_VOICE_AUTH_PASSWORD`) are stored as server-only environment variables (no `NEXT_PUBLIC_` prefix). The browser calls `/api/voice-init`, the Next.js API route calls StarChat's init endpoint with Basic Auth, and returns only the `wsUrl` to the browser. Credentials never reach the client.
 
-**SDK:** The MrCallDirectVoice JS SDK (`public/MrCallDirectVoice.bundle.min.js`, sourced from the `mrcalldirectvoicejs` repository) is loaded via `<Script>` in the root layout (`strategy="afterInteractive"`). It provides zero-dependency browser-based voice calls via WebSocket binary audio streaming with Opus compression (automatic PCM16 fallback). The component uses `startStream(wsUrl)` — not `startCall()` — since the init is handled server-side. To update the SDK, copy the new bundle from the `mrcalldirectvoicejs` repo's `dist/` folder.
+**Encoding negotiation (mobile compatibility):** The StarChat server creates the session pre-configured for a specific encoding (`opus` or `pcm16`) and sample rate. The client and server **must agree on the encoding before the session is created** — if the client falls back to PCM16 after the server has already opened an Opus session, the audio frames are undecodable and the call silently fails.
+
+`TalkToMrCallBlock` therefore detects WebCodecs availability (`AudioEncoder`/`AudioDecoder`) **before** calling `/api/voice-init`, and passes the result:
+
+```typescript
+const opusSupported =
+  typeof AudioEncoder !== 'undefined' && typeof AudioDecoder !== 'undefined';
+const encoding = opusSupported ? 'opus' : 'pcm16';
+const sampleRate = opusSupported ? 24000 : 16000;
+// → passed to /api/voice-init, which forwards to StarChat
+```
+
+WebCodecs availability by platform:
+- Desktop Chrome 94+, Edge 94+: Opus ✓
+- Safari 16.4+ / iOS 16.4+: Opus ✓
+- iOS < 16.4 (Safari): no WebCodecs → PCM16 at 16kHz
+- Older Android browsers: no WebCodecs → PCM16 at 16kHz
+
+`/api/voice-init` whitelists the encoding value (`pcm16` or default `opus`) before forwarding to StarChat, so the server session always matches what the client will send.
+
+**SDK:** The MrCallDirectVoice JS SDK (`public/MrCallDirectVoice.bundle.min.js`, sourced from the `mrcalldirectvoicejs` repository) is loaded via `<Script>` in the root layout (`strategy="afterInteractive"`). It provides zero-dependency browser-based voice calls via WebSocket binary audio streaming with Opus compression or PCM16 fallback. The component uses `startStream(wsUrl)` — not `startCall()` — since the init is handled server-side. To update the SDK, copy the new bundle from the `mrcalldirectvoicejs` repo's `dist/` folder.
 
 **CSP and Permissions-Policy changes:**
 - `script-src`: Added `blob:` (AudioWorklet processors)
