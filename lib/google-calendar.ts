@@ -181,6 +181,7 @@ export async function createBooking(booking: BookingRequest): Promise<string> {
 
   const event = await calendar.events.insert({
     calendarId,
+    sendUpdates: 'all',
     requestBody: {
       summary: `MrCall Meeting — ${booking.name}`,
       description: [
@@ -191,6 +192,10 @@ export async function createBooking(booking: BookingRequest): Promise<string> {
       ].filter(Boolean).join('\n'),
       start: { dateTime: booking.start, timeZone: TIMEZONE },
       end: { dateTime: booking.end, timeZone: TIMEZONE },
+      attendees: [
+        { email: booking.email, displayName: booking.name },
+        { email: calendarId, organizer: true },
+      ],
     },
   });
 
