@@ -227,6 +227,26 @@
     "legal": "Mentions légales",
     "privacy": "Confidentialité"
   },
+  "booking": {
+    "title": "Réserver une réunion",
+    "subtitle": "Choisissez une date et une heure qui vous conviennent.",
+    "loading": "Chargement des disponibilités...",
+    "loadError": "Impossible de charger les créneaux disponibles. Veuillez réessayer plus tard.",
+    "noSlots": "Aucun créneau disponible",
+    "noSlotsDesc": "Il n'y a aucun créneau de réunion disponible dans les deux prochaines semaines. Veuillez nous envoyer un e-mail.",
+    "error": "Une erreur est survenue",
+    "slotTaken": "Ce créneau vient d'être réservé. Veuillez en choisir un autre.",
+    "bookError": "Impossible de finaliser votre réservation. Veuillez réessayer.",
+    "change": "Modifier",
+    "namePlaceholder": "Votre nom",
+    "emailPlaceholder": "E-mail professionnel",
+    "phonePlaceholder": "Numéro de téléphone",
+    "messagePlaceholder": "Message (facultatif)",
+    "confirmBooking": "Confirmer la réservation",
+    "booking": "Réservation en cours...",
+    "confirmed": "Réunion confirmée !",
+    "confirmedDesc": "Vous recevrez une invitation de calendrier à l'adresse e-mail que vous avez fournie."
+  },
   "useCases": {
     "label": "Cas d'usage",
     "titleStart": "MrCall s'adapte à",

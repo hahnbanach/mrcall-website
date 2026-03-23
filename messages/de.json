@@ -227,6 +227,26 @@
     "legal": "Rechtliches",
     "privacy": "Datenschutz"
   },
+  "booking": {
+    "title": "Termin buchen",
+    "subtitle": "Wählen Sie ein Datum und eine Uhrzeit, die Ihnen passen.",
+    "loading": "Verfügbarkeit wird geladen...",
+    "loadError": "Verfügbare Zeiten konnten nicht geladen werden. Bitte versuchen Sie es später erneut.",
+    "noSlots": "Keine Termine verfügbar",
+    "noSlotsDesc": "In den nächsten zwei Wochen sind keine Termine verfügbar. Bitte schreiben Sie uns stattdessen eine E-Mail.",
+    "error": "Etwas ist schiefgelaufen",
+    "slotTaken": "Dieser Termin wurde soeben gebucht. Bitte wählen Sie einen anderen.",
+    "bookError": "Ihre Buchung konnte nicht abgeschlossen werden. Bitte versuchen Sie es erneut.",
+    "change": "Ändern",
+    "namePlaceholder": "Ihr Name",
+    "emailPlaceholder": "Geschäftliche E-Mail",
+    "phonePlaceholder": "Telefonnummer",
+    "messagePlaceholder": "Nachricht (optional)",
+    "confirmBooking": "Buchung bestätigen",
+    "booking": "Wird gebucht...",
+    "confirmed": "Termin bestätigt!",
+    "confirmedDesc": "Sie erhalten eine Kalendereinladung an die von Ihnen angegebene E-Mail-Adresse."
+  },
   "useCases": {
     "label": "Anwendungsfälle",
     "titleStart": "MrCall funktioniert für",

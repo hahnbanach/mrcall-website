@@ -227,6 +227,26 @@
     "legal": "Juridisk",
     "privacy": "Privatlivspolitik"
   },
+  "booking": {
+    "title": "Book et møde",
+    "subtitle": "Vælg en dato og et tidspunkt, der passer dig.",
+    "loading": "Indlæser tilgængelighed...",
+    "loadError": "Kunne ikke indlæse tilgængelige tider. Prøv igen senere.",
+    "noSlots": "Ingen ledige tider",
+    "noSlotsDesc": "Der er ingen ledige mødetider i de næste to uger. Send os venligst en e-mail i stedet.",
+    "error": "Noget gik galt",
+    "slotTaken": "Den tid er lige blevet booket. Vælg venligst en anden.",
+    "bookError": "Kunne ikke fuldføre din booking. Prøv venligst igen.",
+    "change": "Ændr",
+    "namePlaceholder": "Dit navn",
+    "emailPlaceholder": "Arbejds-e-mail",
+    "phonePlaceholder": "Telefonnummer",
+    "messagePlaceholder": "Besked (valgfrit)",
+    "confirmBooking": "Bekræft booking",
+    "booking": "Booker...",
+    "confirmed": "Møde bekræftet!",
+    "confirmedDesc": "Du vil modtage en kalenderinvitation på den e-mailadresse, du har angivet."
+  },
   "useCases": {
     "label": "Anvendelser",
     "titleStart": "MrCall virker for",

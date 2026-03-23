@@ -227,6 +227,26 @@
     "legal": "Note legali",
     "privacy": "Privacy"
   },
+  "booking": {
+    "title": "Prenota un incontro",
+    "subtitle": "Scegli una data e un orario che ti vanno bene.",
+    "loading": "Caricamento disponibilità...",
+    "loadError": "Impossibile caricare gli orari disponibili. Riprova più tardi.",
+    "noSlots": "Nessuno slot disponibile",
+    "noSlotsDesc": "Non ci sono slot disponibili nelle prossime due settimane. Scrivici una email.",
+    "error": "Qualcosa è andato storto",
+    "slotTaken": "Questo slot è appena stato prenotato. Scegline un altro.",
+    "bookError": "Impossibile completare la prenotazione. Riprova.",
+    "change": "Cambia",
+    "namePlaceholder": "Il tuo nome",
+    "emailPlaceholder": "Email aziendale",
+    "phonePlaceholder": "Numero di telefono",
+    "messagePlaceholder": "Messaggio (opzionale)",
+    "confirmBooking": "Conferma prenotazione",
+    "booking": "Prenotazione...",
+    "confirmed": "Incontro confermato!",
+    "confirmedDesc": "Riceverai un invito calendario all'indirizzo email che hai fornito."
+  },
   "useCases": {
     "label": "Casi d'uso",
     "titleStart": "MrCall funziona per",

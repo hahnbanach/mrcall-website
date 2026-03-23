@@ -31,6 +31,9 @@ The build generates:
 | `MRCALL_VOICE_BUSINESS_ID` | Business ID for the website's voice demo agent | Server-only. |
 | `MRCALL_VOICE_AUTH_USER` | API username for voice init Basic Auth | Server-only. Never exposed to browser. |
 | `MRCALL_VOICE_AUTH_PASSWORD` | API password for voice init Basic Auth | Server-only. Never exposed to browser. |
+| `GOOGLE_CALENDAR_CLIENT_EMAIL` | Google service account email for Calendar API | Server-only. Used by booking system. |
+| `GOOGLE_CALENDAR_PRIVATE_KEY` | Google service account private key | Server-only. Stored as secret env var on Scaleway. |
+| `GOOGLE_CALENDAR_ID` | Calendar ID to check availability / create events | Server-only. e.g. `support@mrcall.ai` |
 
 ### Not Required
 
@@ -38,7 +41,7 @@ The build generates:
 - No Google Analytics ID needed (tracking is self-hosted via Starchat)
 - GTM ID (`GTM-MW4TX4N`) is hardcoded in `components/GoogleTagManager.tsx`
 
-> **Note:** If voice env vars are missing, the `/api/voice-init` route returns 503 and the demo gracefully shows an error message. The rest of the website works fine.
+> **Note:** If voice env vars are missing, the `/api/voice-init` route returns 503 and the demo gracefully shows an error message. If calendar env vars are missing, the `/api/booking/*` routes return 503 and the booking widget shows an error. The rest of the website works fine.
 
 ## DNS / Domain
 
