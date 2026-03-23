@@ -227,6 +227,26 @@
     "legal": "Legal",
     "privacy": "Privacidade"
   },
+  "booking": {
+    "title": "Agendar uma reunião",
+    "subtitle": "Escolha uma data e horário que funcionem para você.",
+    "loading": "Carregando disponibilidade...",
+    "loadError": "Não foi possível carregar os horários disponíveis. Tente novamente mais tarde.",
+    "noSlots": "Nenhum horário disponível",
+    "noSlotsDesc": "Não há horários de reunião disponíveis nas próximas duas semanas. Envie-nos um e-mail.",
+    "error": "Algo deu errado",
+    "slotTaken": "Esse horário acabou de ser reservado. Por favor, escolha outro.",
+    "bookError": "Não foi possível concluir seu agendamento. Tente novamente.",
+    "change": "Alterar",
+    "namePlaceholder": "Seu nome",
+    "emailPlaceholder": "E-mail comercial",
+    "phonePlaceholder": "Número de telefone",
+    "messagePlaceholder": "Mensagem (opcional)",
+    "confirmBooking": "Confirmar agendamento",
+    "booking": "Agendando...",
+    "confirmed": "Reunião confirmada!",
+    "confirmedDesc": "Você receberá um convite de calendário no endereço de e-mail que você forneceu."
+  },
   "useCases": {
     "label": "Casos de Uso",
     "titleStart": "O MrCall funciona para",

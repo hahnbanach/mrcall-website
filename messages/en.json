@@ -227,6 +227,26 @@
     "legal": "Legal",
     "privacy": "Privacy"
   },
+  "booking": {
+    "title": "Book a meeting",
+    "subtitle": "Pick a date and time that works for you.",
+    "loading": "Loading availability...",
+    "loadError": "Could not load available times. Please try again later.",
+    "noSlots": "No slots available",
+    "noSlotsDesc": "There are no available meeting slots in the next two weeks. Please email us instead.",
+    "error": "Something went wrong",
+    "slotTaken": "That slot was just booked. Please choose another.",
+    "bookError": "Could not complete your booking. Please try again.",
+    "change": "Change",
+    "namePlaceholder": "Your name",
+    "emailPlaceholder": "Business email",
+    "phonePlaceholder": "Phone number",
+    "messagePlaceholder": "Message (optional)",
+    "confirmBooking": "Confirm booking",
+    "booking": "Booking...",
+    "confirmed": "Meeting confirmed!",
+    "confirmedDesc": "You will receive a calendar invite at the email address you provided."
+  },
   "useCases": {
     "label": "Use Cases",
     "titleStart": "MrCall works for",
