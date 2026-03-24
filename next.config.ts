@@ -23,7 +23,7 @@ const nextConfig: NextConfig = {
               "default-src 'self'",
               "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://googleads.g.doubleclick.net https://www.googleadservices.com blob: data:",
               "style-src 'self' 'unsafe-inline'",
-              "img-src 'self' data: https://www.googletagmanager.com https://www.google-analytics.com https://www.google.com https://googleads.g.doubleclick.net https://pagead2.googlesyndication.com",
+              "img-src 'self' data: https://www.googletagmanager.com https://www.google-analytics.com https://www.google.com https://www.google.it https://www.googleadservices.com https://googleads.g.doubleclick.net https://pagead2.googlesyndication.com",
               "font-src 'self'",
               "connect-src 'self' https://api.mrcall.ai wss://api.mrcall.ai https://www.google-analytics.com https://analytics.google.com https://region1.google-analytics.com https://www.google.com https://pagead2.googlesyndication.com https://googleads.g.doubleclick.net",
               "frame-src https://www.googletagmanager.com https://td.doubleclick.net",
