@@ -8,12 +8,11 @@ const SLOT_END_HOUR = 18;   // 6 PM (last slot starts at 17:30)
 const LOOKAHEAD_DAYS = 14;
 
 function getCalendar() {
-  const auth = new google.auth.GoogleAuth({
-    credentials: {
-      client_email: process.env.GOOGLE_CALENDAR_CLIENT_EMAIL,
-      private_key: process.env.GOOGLE_CALENDAR_PRIVATE_KEY?.replace(/\\n/g, '\n'),
-    },
+  const auth = new google.auth.JWT({
+    email: process.env.GOOGLE_CALENDAR_CLIENT_EMAIL,
+    key: process.env.GOOGLE_CALENDAR_PRIVATE_KEY?.replace(/\\n/g, '\n'),
     scopes: ['https://www.googleapis.com/auth/calendar'],
+    subject: process.env.GOOGLE_CALENDAR_ID || 'support@mrcall.ai',
   });
   return google.calendar({ version: 'v3', auth });
 }
